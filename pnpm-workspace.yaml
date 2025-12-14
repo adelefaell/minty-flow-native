@@ -1,1 +1,7 @@
+packages:
+  - '.'
+
 nodeLinker: hoisted
+
+onlyBuiltDependencies:
+  - '@shopify/react-native-skia'
