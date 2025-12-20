@@ -1,22 +1,22 @@
-import { type PropsWithChildren, useState } from "react"
+import { useState } from "react"
 import { TouchableOpacity } from "react-native"
-import { StyleSheet } from "react-native-unistyles"
+import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
-import { ThemedText } from "~/components/themed-text"
-import { ThemedView } from "~/components/themed-view"
 import { IconSymbol } from "~/components/ui/icon-symbol"
-import { Colors } from "~/constants/theme"
-import { useColorScheme } from "~/hooks/use-color-scheme"
+import { Text } from "~/components/ui/text"
+import { View } from "~/components/ui/view"
 
-export function Collapsible({
-  children,
-  title,
-}: PropsWithChildren & { title: string }) {
+interface CollapsibleProps {
+  title: string
+  children?: React.ReactNode
+}
+
+export const Collapsible = ({ children, title }: CollapsibleProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const theme = useColorScheme() ?? "light"
+  const { theme } = useUnistyles()
 
   return (
-    <ThemedView>
+    <View>
       <TouchableOpacity
         style={styles.heading}
         onPress={() => setIsOpen((value) => !value)}
@@ -26,18 +26,17 @@ export function Collapsible({
           name="chevron.right"
           size={18}
           weight="medium"
-          color={theme === "light" ? Colors.light.icon : Colors.dark.icon}
-          style={{ transform: [{ rotate: isOpen ? "90deg" : "0deg" }] }}
+          color={theme.foreground}
         />
 
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+        <Text variant="h3">{title}</Text>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      {isOpen && <View style={styles.content}>{children}</View>}
+    </View>
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(() => ({
   heading: {
     flexDirection: "row",
     alignItems: "center",
@@ -47,4 +46,4 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginLeft: 24,
   },
-})
+}))
