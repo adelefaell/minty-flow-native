@@ -5,19 +5,62 @@ import {
 } from "expo-symbols"
 import type { StyleProp, ViewStyle } from "react-native"
 
+import type { IconSize } from "./icon-symbol"
+
+/**
+ * Props for the IconSymbol component on iOS.
+ */
+type IconSymbolProps = {
+  /**
+   * The name of the SF Symbol to display.
+   * @see {@link https://developer.apple.com/sf-symbols/ | SF Symbols}
+   */
+  name: SymbolViewProps["name"]
+  /**
+   * The size of the icon in pixels.
+   * @default 24
+   */
+  size?: IconSize
+  /**
+   * The color of the icon.
+   */
+  color: string
+  /**
+   * Additional styles to apply to the icon container.
+   */
+  style?: StyleProp<ViewStyle>
+  /**
+   * The weight/thickness of the symbol.
+   * @default "regular"
+   */
+  weight?: SymbolWeight
+}
+
+/**
+ * An icon component that uses native SF Symbols on iOS.
+ *
+ * This component provides access to Apple's SF Symbols, which are optimized
+ * vector icons that automatically adapt to system settings like font weight
+ * and accessibility preferences.
+ *
+ * @example
+ * ```tsx
+ * <IconSymbol name="house.fill" size={32} color="#007AFF" weight="bold" />
+ * ```
+ *
+ * @param props - The component props
+ * @returns A React component that renders an SF Symbol
+ *
+ * @see {@link https://developer.apple.com/sf-symbols/ | SF Symbols Documentation}
+ * @see {@link https://docs.expo.dev/versions/latest/sdk/symbols/ | Expo Symbols Documentation}
+ */
 export function IconSymbol({
   name,
   size = 24,
   color,
   style,
   weight = "regular",
-}: {
-  name: SymbolViewProps["name"]
-  size?: number
-  color: string
-  style?: StyleProp<ViewStyle>
-  weight?: SymbolWeight
-}) {
+}: IconSymbolProps) {
   return (
     <SymbolView
       weight={weight}

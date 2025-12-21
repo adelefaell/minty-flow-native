@@ -79,17 +79,12 @@ export default function HomeScreen() {
           <Text>app-example</Text>.
         </Text>
       </View>
-
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ width: 100, height: 100, backgroundColor: "#121212" }} />
-        <View style={{ width: 100, height: 100, backgroundColor: "#111111" }} />
-      </View>
       <ButtonExample />
     </ParallaxScrollView>
   )
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create(() => ({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",

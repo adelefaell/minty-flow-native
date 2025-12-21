@@ -212,6 +212,7 @@ export const buttonTextStyles = StyleSheet.create((theme) => ({
   },
   link: {
     color: theme.primary,
+    textDecorationLine: "underline",
     _web: {
       textDecorationLine: "underline",
     },
