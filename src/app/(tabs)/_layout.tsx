@@ -25,7 +25,7 @@ const tabs: TabConfig[] = [
   { key: "explore", icon: "paperplane.fill", component: ExploreScreen },
 ]
 
-export default function TabLayout() {
+const TabLayout = () => {
   const pagerRef = useRef<PagerView>(null)
   const [activePage, setActivePage] = useState(0)
   const { theme } = useUnistyles()
@@ -166,3 +166,5 @@ export default function TabLayout() {
     </View>
   )
 }
+
+export default TabLayout

@@ -39,9 +39,9 @@ export default function HomeScreen() {
         </Text>
       </View>
       <View style={styles.stepContainer}>
-        <Link href="/modal">
+        <Link href="/modal" style={styles.link}>
           <Link.Trigger>
-            <Text>Step 2: Explore</Text>
+            <Text>Step 2: Explore (Click me)</Text>
           </Link.Trigger>
           <Link.Preview />
           <Link.Menu>
@@ -100,5 +100,8 @@ const styles = StyleSheet.create(() => ({
     bottom: 0,
     left: 0,
     position: "absolute",
+  },
+  link: {
+    textDecorationLine: "underline",
   },
 }))
