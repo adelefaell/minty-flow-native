@@ -1,24 +1,26 @@
-import { Image } from "expo-image"
 import { Link } from "expo-router"
-import { Platform } from "react-native"
+import { Animated, Platform } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
+import { ExampleBottomSheet1 } from "~/components/bottom-sheets/example-bottom-sheet-1"
+import { ExampleBottomSheet2 } from "~/components/bottom-sheets/example-bottom-sheet-2"
 import { ButtonExample } from "~/components/button-example"
 import { HelloWave } from "~/components/hello-wave"
-import ParallaxScrollView from "~/components/parallax-scroll-view"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("~/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
+    <Animated.ScrollView
+      // headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+      // headerImage={
+      //   <Image
+      //     source={require("~/assets/images/partial-react-logo.png")}
+      //     style={styles.reactLogo}
+      //   />
+      // }
+      style={{ flex: 1, padding: 32, gap: 16 }}
+      scrollEventThrottle={16}
     >
       <View style={styles.titleContainer}>
         <Text>Welcome!</Text>
@@ -79,8 +81,19 @@ export default function HomeScreen() {
           <Text>app-example</Text>.
         </Text>
       </View>
+      <View style={styles.stepContainer}>
+        <Text variant="h2" style={styles.pageTitle}>
+          Bottom Sheet Examples
+        </Text>
+        <Text variant="p" style={styles.description}>
+          Try out these different bottom sheet examples:
+        </Text>
+        <ExampleBottomSheet1 />
+        <ExampleBottomSheet2 />
+      </View>
+
       <ButtonExample />
-    </ParallaxScrollView>
+    </Animated.ScrollView>
   )
 }
 
@@ -103,5 +116,14 @@ const styles = StyleSheet.create(() => ({
   },
   link: {
     textDecorationLine: "underline",
+  },
+  pageTitle: {
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  description: {
+    marginBottom: 16,
+    textAlign: "center",
+    color: "#666",
   },
 }))

@@ -2,6 +2,7 @@ import { Image } from "expo-image"
 import { Platform } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
+import { ExampleBottomSheet3 } from "~/components/bottom-sheets/example-bottom-sheet-3"
 import { ExternalLink } from "~/components/external-link"
 import ParallaxScrollView from "~/components/parallax-scroll-view"
 import { Collapsible } from "~/components/ui/collapsible"
@@ -26,6 +27,13 @@ export default function TabTwoScreen() {
         <Text variant="h1">Explore</Text>
       </View>
       <Text>This app includes example code to help you get started.</Text>
+
+      <View style={styles.bottomSheetSection}>
+        <Text variant="h2" style={styles.sectionTitle}>
+          Bottom Sheet Example
+        </Text>
+        <ExampleBottomSheet3 />
+      </View>
       <Collapsible title="File-based routing">
         <Text>
           This app has two screens: <Text>app/(tabs)/index.tsx</Text> and{" "}
@@ -101,5 +109,15 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     gap: 8,
     backgroundColor: theme.background,
+  },
+  bottomSheetSection: {
+    marginVertical: 24,
+    padding: 16,
+    backgroundColor: theme.background,
+    borderRadius: 12,
+  },
+  sectionTitle: {
+    marginBottom: 16,
+    textAlign: "center",
   },
 }))
