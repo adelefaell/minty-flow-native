@@ -55,6 +55,10 @@ export interface CalculatorStore extends CalculatorState {
    */
   backspace: () => void
   /**
+   * Toggle the sign of the current input value.
+   */
+  toggleSign: () => void
+  /**
    * Perform a mathematical operation.
    *
    * @param operation - The operation to perform

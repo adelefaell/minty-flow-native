@@ -1,6 +1,7 @@
+// src/components/ui/icon-symbol.tsx
 // Fallback for using MaterialIcons on Android and web.
 
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import type { SymbolViewProps, SymbolWeight } from "expo-symbols"
 import type { ComponentProps } from "react"
 import type { OpaqueColorValue, StyleProp, TextStyle } from "react-native"
@@ -10,7 +11,7 @@ import type { OpaqueColorValue, StyleProp, TextStyle } from "react-native"
  */
 
 type SFName = SymbolViewProps["name"]
-type MaterialName = ComponentProps<typeof MaterialIcons>["name"]
+type MaterialName = ComponentProps<typeof MaterialCommunityIcons>["name"]
 
 function defineIconMapping<T extends Partial<Record<SFName, MaterialName>>>(
   mapping: T,
@@ -20,10 +21,13 @@ function defineIconMapping<T extends Partial<Record<SFName, MaterialName>>>(
 
 // const MAPPING: ValidateMapping<typeof RAW_MAPPING> = RAW_MAPPING
 const MAPPING = defineIconMapping({
-  "house.fill": "home-work",
-  "paperplane.fill": "send",
-  "chevron.left.forwardslash.chevron.right": "code",
+  "circle.line": "circle-outline",
   "chevron.right": "chevron-right",
+  "delete.backward": "backspace",
+  "gearshape.fill": "cog",
+  "account.fill": "account",
+  "chart.bar.fill": "chart-box",
+  "wallet.bifold.fill": "wallet-bifold",
 } as const)
 
 /**
@@ -49,12 +53,6 @@ export type IconSymbolName = keyof typeof MAPPING
  * @see {@link https://icons.expo.fyi | Material Icons Directory}
  * @see {@link https://developer.apple.com/sf-symbols/ | SF Symbols App}
  */
-// const MAPPING = {
-//   "house.fill": "home",
-//   "paperplane.fill": "send",
-//   "chevron.left.forwardslash.chevron.right": "code",
-//   "chevron.right": "chevron-right",
-// } satisfies ValidateMapping<typeof MAPPING>
 
 export type IconSize = 12 | 14 | 16 | 18 | 20 | 24 | 28 | 32 | 36 | 40 | 310
 
@@ -99,7 +97,7 @@ type IconSymbolProps = {
  *
  * @example
  * ```tsx
- * <IconSymbol name="house.fill" size={32} color="#007AFF" />
+ * <IconSymbol name="circle.dotted" size={32} color="#007AFF" />
  * ```
  *
  * @param props - The component props
@@ -110,7 +108,7 @@ type IconSymbolProps = {
  */
 export function IconSymbol({ name, size = 24, color, style }: IconSymbolProps) {
   return (
-    <MaterialIcons
+    <MaterialCommunityIcons
       color={color}
       size={size}
       name={MAPPING[name]}

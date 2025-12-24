@@ -1,0 +1,500 @@
+import { useCallback } from "react"
+import { Pressable } from "react-native"
+import { StyleSheet, useUnistyles } from "react-native-unistyles"
+
+import { useAmountFormattingStore } from "~/stores/amount-formatting.store"
+import { useCalculatorStore } from "~/stores/calculator.store"
+import { useSettingsStore } from "~/stores/settings.store"
+import { Operation } from "~/types/calculator"
+
+import {
+  BottomSheetModalComponent,
+  type BottomSheetModalProps,
+} from "./bottom-sheet"
+import { IconSymbol } from "./ui/icon-symbol"
+import { Text } from "./ui/text"
+import { View } from "./ui/view"
+
+// Styles for the calculator
+const calculatorStyles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    paddingBottom: 8,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  displayContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  displayValue: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  keypadContainer: {
+    gap: 6,
+  },
+  keypadRow: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  keypadButton: {
+    flex: 1,
+    aspectRatio: 1,
+    borderRadius: theme.radius,
+    backgroundColor: theme.accent,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  keypadButtonPressed: {
+    backgroundColor: theme.muted,
+    opacity: 0.8,
+  },
+  keypadButtonText: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  functionButton: {
+    backgroundColor: theme.secondary,
+  },
+  functionButtonText: {
+    fontSize: 20,
+  },
+  equalsButton: {
+    backgroundColor: theme.chart4, // Yellow color
+  },
+  equalsButtonPressed: {
+    backgroundColor: theme.chart4,
+    opacity: 0.8,
+  },
+  equalsButtonText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: theme.foreground,
+  },
+  actionsContainer: {
+    marginTop: 16,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    justifyContent: "center",
+  },
+}))
+
+interface CalculatorSheetProps
+  extends Omit<BottomSheetModalProps, "children" | "id"> {
+  /** Unique identifier for this calculator sheet */
+  id: string
+  /** Callback when the submit button is pressed */
+  onSubmit?: (value: number) => void
+  /** Initial value for the calculator */
+  initialValue?: number
+  /** Title to display at the top (default: "Expense") */
+  title?: string
+}
+
+/**
+ * Calculator Bottom Sheet Component
+ *
+ * A full-featured calculator presented as a bottom sheet with numeric keypad,
+ * backspace, calculator operations, and submit functionality.
+ */
+export function CalculatorSheet({
+  id,
+  onSubmit,
+  initialValue,
+  title = "Expense",
+  onDismiss,
+  ...bottomSheetProps
+}: CalculatorSheetProps) {
+  const {
+    display,
+    formatDisplay,
+    inputNumber,
+    inputDecimal,
+    backspace,
+    toggleSign,
+    clear,
+    calculateResult,
+    performOperation,
+    reset,
+    operation,
+    previousValue,
+    waitingForOperand,
+    hasActiveOperation,
+  } = useCalculatorStore()
+
+  const { preferredCurrency } = useSettingsStore()
+  const { currencyLook } = useAmountFormattingStore()
+  const { theme } = useUnistyles()
+
+  // Format the display value with currency
+  // Ensure we always have a valid display value
+  const displayValue = display || "0"
+
+  // Try to format, with fallback to ensure we always have a valid display
+  let formattedDisplay: string
+  try {
+    formattedDisplay = formatDisplay(
+      displayValue,
+      preferredCurrency || "USD",
+      currencyLook,
+    )
+    // Validate the formatted result
+    if (
+      !formattedDisplay ||
+      formattedDisplay.trim() === "" ||
+      formattedDisplay === "NaN" ||
+      formattedDisplay.includes("undefined") ||
+      formattedDisplay.includes("null")
+    ) {
+      throw new Error("Invalid formatted display")
+    }
+  } catch {
+    // Fallback to simple formatting
+    const num = parseFloat(displayValue) || 0
+    if (preferredCurrency) {
+      formattedDisplay = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: preferredCurrency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      }).format(num)
+    } else {
+      formattedDisplay = num.toString()
+    }
+  }
+
+  // Handle number input
+  const handleNumberPress = useCallback(
+    (num: string) => {
+      inputNumber(num)
+    },
+    [inputNumber],
+  )
+
+  // Handle decimal input
+  const handleDecimalPress = useCallback(() => {
+    inputDecimal()
+  }, [inputDecimal])
+
+  // Handle backspace
+  const handleBackspace = useCallback(() => {
+    backspace()
+  }, [backspace])
+
+  // Handle toggle sign
+  const handleToggleSign = useCallback(() => {
+    toggleSign()
+  }, [toggleSign])
+
+  // Handle equals (calculate and submit)
+  const handleEquals = useCallback(() => {
+    // Calculate result if there's an active operation
+    if (hasActiveOperation()) {
+      calculateResult()
+      // After calculation, don't submit yet - wait for check icon press
+      return
+    }
+    // If no active operation, submit the current value
+    const value = useCalculatorStore.getState().getCurrentValue()
+    onSubmit?.(value)
+  }, [onSubmit, calculateResult, hasActiveOperation])
+
+  // Handle dismiss - reset calculator
+  const handleDismiss = useCallback(() => {
+    if (initialValue !== undefined) {
+      reset(initialValue)
+    } else {
+      reset(0)
+    }
+    onDismiss?.()
+  }, [onDismiss, initialValue, reset])
+
+  // Initialize calculator when sheet opens
+  const handleSheetChange = useCallback(
+    (index: number) => {
+      if (index >= 0 && initialValue !== undefined) {
+        // Sheet is opening, reset with initial value
+        reset(initialValue)
+      }
+      bottomSheetProps.onChange?.(index)
+    },
+    [initialValue, reset, bottomSheetProps.onChange],
+  )
+
+  return (
+    <BottomSheetModalComponent
+      id={id}
+      onDismiss={handleDismiss}
+      onChange={handleSheetChange}
+      {...bottomSheetProps}
+    >
+      <View style={calculatorStyles.container}>
+        {/* Header */}
+        <View style={calculatorStyles.header}>
+          <Text style={calculatorStyles.title}>{title}</Text>
+        </View>
+
+        {/* Display */}
+        <View style={calculatorStyles.displayContainer}>
+          <Text style={calculatorStyles.displayValue}>
+            {operation && previousValue !== null ? (
+              <>
+                {formatDisplay(
+                  previousValue.toString(),
+                  preferredCurrency || "USD",
+                  currencyLook,
+                )}{" "}
+                {operation}{" "}
+                {waitingForOperand
+                  ? "?"
+                  : formatDisplay(
+                      displayValue,
+                      preferredCurrency || "USD",
+                      currencyLook,
+                    )}
+              </>
+            ) : (
+              formattedDisplay
+            )}
+          </Text>
+        </View>
+
+        {/* Keypad - 4 columns, 5 rows */}
+        <View style={calculatorStyles.keypadContainer}>
+          {/* Row 1 - C, +/-, %, ÷ */}
+          <View style={calculatorStyles.keypadRow}>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={clear}
+            >
+              <Text style={calculatorStyles.functionButtonText}>C</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={handleToggleSign}
+            >
+              <Text style={calculatorStyles.functionButtonText}>+/-</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => performOperation(Operation.PERCENT)}
+            >
+              <Text style={calculatorStyles.functionButtonText}>%</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => performOperation(Operation.DIVIDE)}
+            >
+              <Text style={calculatorStyles.functionButtonText}>÷</Text>
+            </Pressable>
+          </View>
+
+          {/* Row 2 - 7, 8, 9, × */}
+          <View style={calculatorStyles.keypadRow}>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("7")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>7</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("8")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>8</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("9")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>9</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => performOperation(Operation.MULTIPLY)}
+            >
+              <Text style={calculatorStyles.functionButtonText}>×</Text>
+            </Pressable>
+          </View>
+
+          {/* Row 3 - 4, 5, 6, - */}
+          <View style={calculatorStyles.keypadRow}>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("4")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>4</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("5")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>5</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("6")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>6</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => performOperation(Operation.MINUS)}
+            >
+              <Text style={calculatorStyles.functionButtonText}>-</Text>
+            </Pressable>
+          </View>
+
+          {/* Row 4 - 1, 2, 3, + */}
+          <View style={calculatorStyles.keypadRow}>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("1")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>1</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("2")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>2</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("3")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>3</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.functionButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => performOperation(Operation.PLUS)}
+            >
+              <Text style={calculatorStyles.functionButtonText}>+</Text>
+            </Pressable>
+          </View>
+
+          {/* Row 5 - , (decimal), 0, ⌫ (backspace), = (equals) */}
+          <View style={calculatorStyles.keypadRow}>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={handleDecimalPress}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>.</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={() => handleNumberPress("0")}
+            >
+              <Text style={calculatorStyles.keypadButtonText}>0</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                pressed && calculatorStyles.keypadButtonPressed,
+              ]}
+              onPress={handleBackspace}
+              onLongPress={clear}
+            >
+              <IconSymbol
+                name="delete.backward"
+                size={24}
+                color={theme.foreground}
+              />
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                calculatorStyles.keypadButton,
+                calculatorStyles.equalsButton,
+                pressed && calculatorStyles.equalsButtonPressed,
+              ]}
+              onPress={handleEquals}
+            >
+              {hasActiveOperation() ? (
+                <Text style={calculatorStyles.equalsButtonText}>=</Text>
+              ) : (
+                <Text style={calculatorStyles.equalsButtonText}>✓</Text>
+                // <IconSymbol
+                //   name="checkmark"
+                //   size={24}
+                //   color={theme.foreground}
+                // />
+              )}
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </BottomSheetModalComponent>
+  )
+}

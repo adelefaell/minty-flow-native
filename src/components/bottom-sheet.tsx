@@ -117,12 +117,14 @@ export interface BottomSheetModalProps {
   backdropEnableTouchThrough?: boolean
   /** Backdrop press behavior: 'none' | 'close' | 'collapse' | number */
   backdropPressBehavior?: "none" | "close" | "collapse" | number
+  /** Enable dynamic sizing */
+  enableDynamicSizing?: boolean
 }
 
 export function BottomSheetModalComponent({
   id,
   children,
-  snapPoints = ["50%"],
+  snapPoints,
   onChange,
   onDismiss,
   enablePanDownToClose = true,
@@ -133,6 +135,7 @@ export function BottomSheetModalComponent({
   backdropDisappearsOnIndex = -1,
   backdropEnableTouchThrough = false,
   backdropPressBehavior = "close",
+  enableDynamicSizing = true,
 }: BottomSheetModalProps) {
   const registerSheet = useBottomSheetStore((state) => state.registerSheet)
   const unregisterSheet = useBottomSheetStore((state) => state.unregisterSheet)
@@ -193,6 +196,7 @@ export function BottomSheetModalComponent({
     <BottomSheetModal
       ref={bottomSheetModalRef}
       snapPoints={memoizedSnapPoints}
+      enableDynamicSizing={enableDynamicSizing}
       onChange={handleSheetChanges}
       onDismiss={onDismiss}
       enablePanDownToClose={enablePanDownToClose}

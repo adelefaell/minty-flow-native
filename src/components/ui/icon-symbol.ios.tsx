@@ -1,3 +1,4 @@
+// src/components/ui/icon-symbol.ios.tsx
 import {
   SymbolView,
   type SymbolViewProps,
@@ -45,7 +46,7 @@ type IconSymbolProps = {
  *
  * @example
  * ```tsx
- * <IconSymbol name="house.fill" size={32} color="#007AFF" weight="bold" />
+ * <IconSymbol name="circle.dotted" size={32} color="#007AFF" weight="bold" />
  * ```
  *
  * @param props - The component props

@@ -8,21 +8,25 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
-import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
+import { IconSymbol } from "~/components/ui/icon-symbol"
+import { Tooltip, TooltipProvider } from "~/components/ui/tooltip"
 import { View } from "~/components/ui/view"
 
 import HomeScreen from "."
-import ExploreScreen from "./explore"
+import AccountsScreen from "./accounts"
+import SettingsScreen from "./settings"
+import StatsScreen from "./stats"
 
 type TabConfig = {
   key: string
-  icon: IconSymbolName
   component: React.ComponentType
 }
 
 const tabs: TabConfig[] = [
-  { key: "home", icon: "house.fill", component: HomeScreen },
-  { key: "explore", icon: "paperplane.fill", component: ExploreScreen },
+  { key: "home", component: HomeScreen },
+  { key: "stats", component: StatsScreen },
+  { key: "accounts", component: AccountsScreen },
+  { key: "settings", component: SettingsScreen },
 ]
 
 const TabLayout = () => {
@@ -34,7 +38,6 @@ const TabLayout = () => {
   const styles = StyleSheet.create((t) => ({
     container: {
       flex: 1,
-      backgroundColor: t.background,
     },
     pager: {
       flex: 1,
@@ -58,35 +61,30 @@ const TabLayout = () => {
     tabBar: {
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 20,
+      justifyContent: "space-evenly",
       height: 54,
       width: "90%",
-      maxWidth: 420,
       borderRadius: 10,
-      backgroundColor: t.card,
+      backgroundColor: t.secondary,
       marginBottom: insets.bottom + 8,
 
       pointerEvents: "auto",
     },
 
     tabButton: {
-      flex: 1,
-      height: "100%",
       alignItems: "center",
       justifyContent: "center",
     },
 
     centerButton: {
-      // position: "absolute",
-      // left: "50%",
-      width: 64,
-      height: 64,
-      borderRadius: 32,
+      borderRadius: 10,
       backgroundColor: t.primary,
       alignItems: "center",
       justifyContent: "center",
+      width: 44,
+      height: 44,
       zIndex: 20,
+      flexShrink: 0,
     },
   }))
 
@@ -105,65 +103,108 @@ const TabLayout = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <PagerView
-        ref={pagerRef}
-        style={styles.pager}
-        initialPage={0}
-        onPageSelected={onPageSelected}
-      >
-        {tabs.map((tab) => (
-          <View key={tab.key} style={styles.page}>
-            <tab.component />
+    <TooltipProvider>
+      <View style={styles.container}>
+        <PagerView
+          ref={pagerRef}
+          style={styles.pager}
+          initialPage={0}
+          onPageSelected={onPageSelected}
+        >
+          {tabs.map((tab) => (
+            <View key={tab.key} style={styles.page}>
+              <tab.component />
+            </View>
+          ))}
+        </PagerView>
+
+        {/* Floating tab bar */}
+        <View style={styles.tabBarContainer}>
+          <View style={styles.tabBar}>
+            <Tooltip text="Home">
+              <Button
+                variant="link"
+                size="icon"
+                onPress={() => goTo(0)}
+                style={styles.tabButton}
+              >
+                <IconSymbol
+                  name="circle.line"
+                  color={
+                    activePage === 0 ? theme.primary : theme.mutedForeground
+                  }
+                />
+              </Button>
+            </Tooltip>
+
+            <Tooltip text="Statistics">
+              <Button
+                variant="link"
+                size="icon"
+                onPress={() => goTo(1)}
+                style={styles.tabButton}
+              >
+                <IconSymbol
+                  name="chart.bar.fill"
+                  color={
+                    activePage === 1 ? theme.primary : theme.mutedForeground
+                  }
+                />
+              </Button>
+            </Tooltip>
+
+            <Tooltip text="Add Transaction">
+              <Button
+                variant="default"
+                size="icon"
+                onPress={() =>
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                }
+                style={styles.centerButton}
+              >
+                <MaterialIcons
+                  name="add"
+                  size={28}
+                  color={theme.primaryForeground}
+                />
+              </Button>
+            </Tooltip>
+
+            <Tooltip text="Accounts">
+              <Button
+                variant="link"
+                size="icon"
+                onPress={() => goTo(2)}
+                style={styles.tabButton}
+              >
+                <IconSymbol
+                  name="wallet.bifold.fill"
+                  color={
+                    activePage === 2 ? theme.primary : theme.mutedForeground
+                  }
+                />
+              </Button>
+            </Tooltip>
+
+            <Tooltip text="Settings">
+              <Button
+                variant="link"
+                size="icon"
+                onPress={() => goTo(3)}
+                style={styles.tabButton}
+              >
+                <IconSymbol
+                  name="gearshape.fill"
+                  color={
+                    activePage === 3 ? theme.primary : theme.mutedForeground
+                  }
+                />
+              </Button>
+            </Tooltip>
           </View>
-        ))}
-      </PagerView>
-
-      {/* Floating tab bar */}
-      <View style={styles.tabBarContainer}>
-        <View style={styles.tabBar}>
-          <Button
-            variant="link"
-            size="icon"
-            onPress={() => goTo(0)}
-            style={styles.tabButton}
-          >
-            <IconSymbol
-              size={24}
-              name="house.fill"
-              color={activePage === 0 ? theme.primary : theme.mutedForeground}
-            />
-          </Button>
-
-          <Button
-            variant="default"
-            size="icon"
-            onPress={() =>
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-            }
-          >
-            <MaterialIcons
-              name="add"
-              size={28}
-              color={theme.primaryForeground}
-            />
-          </Button>
-
-          <Button
-            variant="link"
-            size="icon"
-            onPress={() => goTo(1)}
-            style={styles.tabButton}
-          >
-            <IconSymbol
-              size={24}
-              name="paperplane.fill"
-              color={activePage === 1 ? theme.primary : theme.mutedForeground}
-            />
-          </Button>
         </View>
       </View>
-    </View>
+    </TooltipProvider>
   )
 }
 

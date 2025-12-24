@@ -5,153 +5,14 @@ import { immer } from "zustand/middleware/immer"
 import { useAmountFormattingStore } from "~/stores/amount-formatting.store"
 import type { CalculatorStore, Operation } from "~/types/calculator"
 import { calculateOperation } from "~/utils/calculate-operations"
-import { isValidDisplay, normalizeDisplay } from "~/utils/normalize-display"
 import {
+  CALCULATOR_CONFIG,
+  formatDisplayValue,
   getDefaultLocale,
-  numberFormatter,
+  isValidDisplay,
+  normalizeDisplay,
   roundToDecimals,
 } from "~/utils/number-format"
-
-// Constants
-export const CALCULATOR_CONFIG = {
-  MAX_DIGITS: 14,
-  MAX_DECIMALS: 2,
-  DEFAULT_DISPLAY: "0",
-} as const
-
-// ------------------------
-// Formatter memoization
-// ------------------------
-type FormatterKey = string
-const formatterCache = new Map<FormatterKey, string>()
-
-function getCachedFormatted(
-  value: number,
-  locale: string | undefined,
-  options: Parameters<typeof numberFormatter>[1],
-) {
-  const resolvedLocale = locale ?? getDefaultLocale()
-  const key = JSON.stringify({ locale: resolvedLocale, options, value })
-  const cached = formatterCache.get(key)
-  if (cached) return cached
-  const formatted = numberFormatter(value, options, resolvedLocale)
-  formatterCache.set(key, formatted)
-  return formatted
-}
-
-// ------------------------
-// Pure helper: formatDisplayValue
-// ------------------------
-/**
- * Pure, testable formatter for calculator displays.
- * - `currencyLook` is intentionally optional so callers can pass formatting
- *   preferences from UI-level stores and avoid cross-store calls in hot paths.
- */
-export function formatDisplayValue(
-  value: string,
-  currency?: string,
-  currencyLook?: Intl.NumberFormatOptions["currencyDisplay"],
-  locale?: string,
-) {
-  const resolvedLocale = locale ?? getDefaultLocale()
-
-  const baseOptions: Intl.NumberFormatOptions = {
-    notation: "standard",
-    signDisplay: "negative",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: CALCULATOR_CONFIG.MAX_DECIMALS,
-  }
-
-  // Special handling when user types a trailing decimal point ("123.")
-  if (value.endsWith(".")) {
-    const numStr = value.slice(0, -1)
-    // allow "." -> "0."
-    const num = numStr === "" ? 0 : parseFloat(numStr)
-    if (Number.isNaN(num)) return "0."
-
-    if (currency) {
-      const formatted = getCachedFormatted(num, resolvedLocale, {
-        currency,
-        currencyDisplay: currencyLook,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-        notation: baseOptions.notation,
-        signDisplay: baseOptions.signDisplay,
-      })
-      return `${formatted}.`
-    }
-
-    const formatted = getCachedFormatted(num, resolvedLocale, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-      notation: baseOptions.notation,
-      signDisplay: baseOptions.signDisplay,
-    })
-    return `${formatted}.`
-  }
-
-  // Normal numeric parsing
-  const num = parseFloat(value)
-  if (Number.isNaN(num)) {
-    // allow ".5" typed by the user to become "0.5"
-    if (value === ".") return "0."
-    return CALCULATOR_CONFIG.DEFAULT_DISPLAY
-  }
-
-  // Currency formatting (preferred path)
-  if (currency) {
-    // Preserve trailing zeros by counting decimal places in original value
-    let minDecimals = 0
-
-    if (value.includes(".")) {
-      const decimalPart = value.split(".")[1]
-      if (decimalPart !== undefined) {
-        minDecimals = Math.min(
-          decimalPart.length,
-          CALCULATOR_CONFIG.MAX_DECIMALS,
-        )
-      }
-    }
-
-    return getCachedFormatted(num, resolvedLocale, {
-      currency,
-      currencyDisplay: currencyLook,
-      minimumFractionDigits: minDecimals,
-      maximumFractionDigits: CALCULATOR_CONFIG.MAX_DECIMALS,
-      notation: baseOptions.notation,
-      signDisplay: baseOptions.signDisplay,
-    })
-  }
-
-  // Non-currency: preserve trailing zeros and decimal point
-  if (value.includes(".")) {
-    const [integerPart, decimalPart] = value.split(".")
-    if (
-      decimalPart !== undefined && // Has decimal part (even if empty like "8.")
-      integerPart !== "" &&
-      !Number.isNaN(parseFloat(integerPart))
-    ) {
-      const formattedInteger = getCachedFormatted(
-        parseFloat(integerPart),
-        resolvedLocale,
-        {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-          notation: baseOptions.notation,
-          signDisplay: baseOptions.signDisplay,
-        },
-      )
-      return `${formattedInteger}.${decimalPart}`
-    }
-  }
-
-  return getCachedFormatted(num, resolvedLocale, {
-    minimumFractionDigits: baseOptions.minimumFractionDigits,
-    maximumFractionDigits: baseOptions.maximumFractionDigits,
-    notation: baseOptions.notation,
-    signDisplay: baseOptions.signDisplay,
-  })
-}
 
 // ------------------------
 // Refactored store
@@ -219,12 +80,52 @@ export const useCalculatorStore = create<CalculatorStore>()(
       backspace: () => {
         set((state) => {
           if (state.display.length > 1) {
-            state.display = state.display.slice(0, -1)
-            state.inputValue = parseFloat(state.display) || 0
+            const newDisplay = state.display.slice(0, -1)
+            // Normalize after backspace to handle cases like "0." -> "0"
+            const normalized = normalizeDisplay(newDisplay)
+            state.display = normalized
+            state.inputValue = parseFloat(normalized) || 0
             return
           }
           state.display = CALCULATOR_CONFIG.DEFAULT_DISPLAY
           state.inputValue = 0
+        }, false)
+      },
+
+      toggleSign: () => {
+        set((state) => {
+          const currentValue = state.inputValue
+          if (currentValue === 0) return // Don't toggle zero
+
+          const newValue = -currentValue
+          state.inputValue = newValue
+
+          // Reconstruct display string from the new numeric value, preserving decimal format
+          const hasDecimal = state.display.includes(".")
+          const isTrailingDecimal = state.display.endsWith(".")
+
+          if (isTrailingDecimal) {
+            // Preserve trailing decimal point: "5." -> "-5." or "-5." -> "5."
+            const absValue = Math.abs(newValue)
+            state.display = newValue < 0 ? `-${absValue}.` : `${absValue}.`
+          } else if (hasDecimal) {
+            // Preserve decimal places: "5.23" -> "-5.23" or "-5.23" -> "5.23"
+            // Get decimal part from original display
+            const decimalMatch = state.display.match(/\.(\d*)$/)
+            const decimalPart = decimalMatch?.[1] || ""
+
+            // Use the new numeric value to get the integer part
+            const absValue = Math.abs(newValue)
+            const integerPart = Math.floor(absValue).toString()
+
+            state.display =
+              newValue < 0
+                ? `-${integerPart}.${decimalPart}`
+                : `${integerPart}.${decimalPart}`
+          } else {
+            // Simple integer: "5" -> "-5" or "-5" -> "5"
+            state.display = newValue.toString()
+          }
         }, false)
       },
 
@@ -244,12 +145,24 @@ export const useCalculatorStore = create<CalculatorStore>()(
             return
           }
 
-          const currentValue = state.previousValue || 0
+          // previousValue is guaranteed to be non-null here due to check above
+          const currentValue = state.previousValue
           const result = calculateOperation(
             state.operation as Operation,
             currentValue,
             inputValue,
           )
+
+          // Check for division by zero or invalid result
+          if (!Number.isFinite(result) || Number.isNaN(result)) {
+            // Reset on error
+            state.display = CALCULATOR_CONFIG.DEFAULT_DISPLAY
+            state.inputValue = 0
+            state.previousValue = null
+            state.operation = null
+            state.waitingForOperand = false
+            return
+          }
 
           state.previousValue = roundToDecimals(
             result,
@@ -274,15 +187,28 @@ export const useCalculatorStore = create<CalculatorStore>()(
             inputValue,
           )
 
+          // Check for division by zero or invalid result
+          if (!Number.isFinite(result) || Number.isNaN(result)) {
+            state.display = CALCULATOR_CONFIG.DEFAULT_DISPLAY
+            state.inputValue = 0
+            state.previousValue = null
+            state.operation = null
+            state.waitingForOperand = false
+            return
+          }
+
           const rounded = roundToDecimals(
             result,
             CALCULATOR_CONFIG.MAX_DECIMALS,
           )
-          state.display = rounded.toString()
+          // Convert to string, removing unnecessary trailing zeros
+          // but preserving decimal point if it's a decimal number
+          const displayStr = rounded.toString()
+          state.display = displayStr
           state.inputValue = rounded
           state.previousValue = null
           state.operation = null
-          state.waitingForOperand = false
+          state.waitingForOperand = true // Next number input should overwrite the result
         }, false)
       },
 

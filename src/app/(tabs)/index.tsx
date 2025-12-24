@@ -1,10 +1,13 @@
 import { Link } from "expo-router"
-import { Animated, Platform } from "react-native"
+import { useCallback } from "react"
+import { Animated, Platform, Pressable } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
+import { useBottomSheet } from "~/components/bottom-sheet"
 import { ExampleBottomSheet1 } from "~/components/bottom-sheets/example-bottom-sheet-1"
 import { ExampleBottomSheet2 } from "~/components/bottom-sheets/example-bottom-sheet-2"
 import { ButtonExample } from "~/components/button-example"
+import { CalculatorSheet } from "~/components/calculator-sheet"
 import { HelloWave } from "~/components/hello-wave"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -90,10 +93,45 @@ export default function HomeScreen() {
         </Text>
         <ExampleBottomSheet1 />
         <ExampleBottomSheet2 />
+        <CalculatorSheetExample />
       </View>
 
       <ButtonExample />
     </Animated.ScrollView>
+  )
+}
+
+function CalculatorSheetExample() {
+  const sheet = useBottomSheet("calculator-sheet")
+
+  const handleSubmit = useCallback(
+    (value: number) => {
+      alert(`Calculator submitted with value: ${value}`)
+      sheet.dismiss()
+    },
+    [sheet],
+  )
+
+  return (
+    <>
+      <Pressable style={styles.triggerButton} onPress={() => sheet.present()}>
+        <Text style={styles.triggerButtonText}>Open Calculator</Text>
+      </Pressable>
+
+      <CalculatorSheet
+        id="calculator-sheet"
+        title="Expense"
+        onSubmit={handleSubmit}
+        onChange={(sheetIndex) => {
+          if (sheetIndex === -1) {
+            // Sheet closed
+          }
+        }}
+        onDismiss={() => {
+          // Handle sheet dismiss
+        }}
+      />
+    </>
   )
 }
 
@@ -125,5 +163,18 @@ const styles = StyleSheet.create(() => ({
     marginBottom: 16,
     textAlign: "center",
     color: "#666",
+  },
+  triggerButton: {
+    backgroundColor: "#51CF66",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignSelf: "center",
+    marginVertical: 8,
+  },
+  triggerButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
 }))
