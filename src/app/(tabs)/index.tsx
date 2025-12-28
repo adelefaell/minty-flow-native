@@ -1,7 +1,6 @@
 import { Image } from "expo-image"
 import { Link } from "expo-router"
 import { useCallback } from "react"
-import { Pressable } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
 import { useBottomSheet } from "~/components/bottom-sheet"
@@ -9,6 +8,7 @@ import { ButtonExample } from "~/components/button-example"
 import { CalculatorSheet } from "~/components/calculator-sheet"
 import { ExampleBottomSheet1 } from "~/components/example-bottom-sheet-1"
 import ParallaxScrollView from "~/components/parallax-scroll-view"
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 

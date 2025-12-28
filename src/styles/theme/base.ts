@@ -67,14 +67,15 @@ export const DEFAULT_DARK_BASE: MintyColorScheme = {
 /**
  * Default OLED theme base
  * True black for OLED displays
+ * Note: secondary is #101010 (very dark gray) to provide contrast for navbar/tab bar
  */
 export const DEFAULT_OLED_BASE: MintyColorScheme = {
   ...DEFAULT_DARK_BASE,
   name: "defaultOledBase",
   surface: "#000000",
-  secondary: "#000000",
+  secondary: "#101010",
   error: DEFAULT_DARK_BASE.error,
   onError: DEFAULT_DARK_BASE.onError,
-  border: "rgba(20, 20, 20, 1)",
-  shadow: "rgba(0, 0, 0, 0.8)",
+  border: "rgba(35, 35, 35, 1)",
+  shadow: "rgba(0, 0, 0, 0.7)",
 }

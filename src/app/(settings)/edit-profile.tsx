@@ -2,13 +2,14 @@ import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
-import { Alert, Pressable, ScrollView } from "react-native"
+import { Alert, ScrollView } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
 import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Input } from "~/components/ui/input"
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { useProfileStore } from "~/stores/profile.store"
@@ -17,7 +18,6 @@ import { getInitials } from "~/utils/string-utils"
 export default function EditProfileScreen() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
-  const { theme } = useUnistyles()
   const { name, imageUri, setName, setImageUri } = useProfileStore()
 
   const [localName, setLocalName] = useState(name)
@@ -87,11 +87,7 @@ export default function EditProfileScreen() {
               )}
             </View>
             <View style={styles.cameraIconContainer}>
-              <IconSymbol
-                name="camera.fill"
-                size={20}
-                color={theme.colors.surface}
-              />
+              <IconSymbol name="camera.fill" size={20} />
             </View>
           </Pressable>
           {localImageUri && (
@@ -122,16 +118,7 @@ export default function EditProfileScreen() {
           { paddingBottom: Math.max(insets.bottom + 8, 24) },
         ]}
       >
-        <Button
-          onPress={handleSave}
-          variant="default"
-          style={styles.saveButton}
-        >
-          <IconSymbol
-            name="checkmark"
-            size={20}
-            color={theme.colors.onPrimary}
-          />
+        <Button onPress={handleSave} style={styles.saveButton}>
           <Text>Save</Text>
         </Button>
       </View>
@@ -159,6 +146,9 @@ const styles = StyleSheet.create((theme) => ({
   avatarContainer: {
     position: "relative",
     marginBottom: 16,
+    padding: 10,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   avatar: {
     width: 128,
@@ -183,14 +173,12 @@ const styles = StyleSheet.create((theme) => ({
   },
   cameraIconContainer: {
     position: "absolute",
-    bottom: -10,
-    right: -10,
+    bottom: 0,
+    right: 0,
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: theme.colors.primary,
-    borderWidth: 3,
-    borderColor: theme.colors.surface,
+    borderRadius: theme.radius,
+    backgroundColor: theme.colors.secondary,
     alignItems: "center",
     justifyContent: "center",
   },

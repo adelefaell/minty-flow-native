@@ -13,11 +13,11 @@ export default function SettingsScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text variant="h2" style={styles.headerTitle}>
           SETTINGS
         </Text>
-      </View>
+      </View> */}
 
       {/* User Profile Section */}
       <ProfileSection />
@@ -89,9 +89,10 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     backgroundColor: theme.colors.surface,
     marginBottom: 50,
+    paddingTop: 50,
   },
   content: {
-    paddingBottom: 40,
+    paddingBottom: 100,
   },
   header: {
     paddingHorizontal: 20,
@@ -104,7 +105,7 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.onSecondary,
   },
   section: {
-    marginBottom: 10,
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 12,

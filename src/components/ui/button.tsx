@@ -1,6 +1,8 @@
 import * as React from "react"
-import { Pressable, type PressableProps } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import type { PressableProps } from "react-native"
+import { StyleSheet } from "react-native-unistyles"
+
+import { Pressable } from "./pressable"
 
 // Text class context for passing variant styles to child Text components
 const ButtonTextContext = React.createContext<{
@@ -32,17 +34,13 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  const { theme } = useUnistyles()
   const contextValue = React.useMemo(() => ({ variant, size }), [variant, size])
 
   return (
     <ButtonTextContext.Provider value={contextValue}>
       <Pressable
+        // native
         role="button"
-        android_ripple={{
-          color: theme.colors.rippleColor,
-          foreground: true, // <-- KEY TO MAKE IT SHOW
-        }}
         style={(state) => [
           styles.base,
           variantStyles[variant],
@@ -66,7 +64,6 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
     borderRadius: theme.radius,
     gap: 8,
     flexShrink: 1,
@@ -148,9 +145,7 @@ const variantStyles = StyleSheet.create((theme) => ({
 const pressedStyles = StyleSheet.create((theme) => ({
   default: {},
   destructive: {},
-  outline: {
-    backgroundColor: theme.colors.secondary,
-  },
+  outline: {},
   secondary: {},
   ghost: {
     backgroundColor: theme.colors.secondary,
@@ -190,6 +185,7 @@ export const buttonTextStyles = StyleSheet.create((theme) => ({
   base: {
     fontSize: 14,
     fontWeight: "500",
+    color: theme.colors.onSurface,
     _web: {
       pointerEvents: "none",
       transitionProperty: "colors",
@@ -212,7 +208,7 @@ export const buttonTextStyles = StyleSheet.create((theme) => ({
     color: theme.colors.onSurface,
     _web: {
       _hover: {
-        color: theme.colors.primary,
+        color: theme.colors.secondary,
       },
     },
   },

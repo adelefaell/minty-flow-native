@@ -1,7 +1,7 @@
-import { Pressable } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
 import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -20,8 +20,6 @@ export const SettingsItem = ({
   onPress,
   soon,
 }: SettingsItemProps) => {
-  const { theme } = useUnistyles()
-
   return (
     <Pressable
       style={(state) => [
@@ -30,10 +28,6 @@ export const SettingsItem = ({
         soon && { opacity: 0.5 },
       ]}
       onPress={onPress}
-      android_ripple={{
-        color: theme.colors.rippleColor,
-        foreground: true, // <-- KEY TO MAKE IT SHOW
-      }}
     >
       <View style={styles.settingsItemLeft}>
         <View style={styles.iconContainer}>

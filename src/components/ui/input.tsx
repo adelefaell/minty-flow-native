@@ -3,7 +3,7 @@ import {
   TextInput as RNTextInput,
   type TextInputProps as RNTextInputProps,
 } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
 export interface InputProps extends RNTextInputProps {
   error?: boolean
@@ -17,7 +17,6 @@ export function Input({
   onBlur,
   ...props
 }: InputProps) {
-  const { theme } = useUnistyles()
   const [isFocused, setIsFocused] = useState(false)
 
   const handleFocus = useCallback(
@@ -45,8 +44,8 @@ export function Input({
         !editable && styles.disabled,
         typeof style === "function" ? undefined : style,
       ]}
-      placeholderTextColor={theme.colors.onSecondary}
-      selectionColor={theme.colors.primary}
+      placeholderTextColor={styles.placeholder.color}
+      selectionColor={styles.selectionColor.color}
       editable={editable}
       onFocus={handleFocus}
       onBlur={handleBlur}
@@ -62,8 +61,8 @@ const styles = StyleSheet.create((theme) => ({
     minWidth: 0,
     borderRadius: theme.radius,
     borderWidth: 1,
-    borderColor: theme.colors.border,
-    backgroundColor: theme.colors.secondary,
+    borderColor: theme.colors.onSurface,
+    backgroundColor: theme.colors.surface,
     paddingHorizontal: 12,
     paddingVertical: 4,
     fontSize: 16,
@@ -83,6 +82,12 @@ const styles = StyleSheet.create((theme) => ({
       paddingTop: 8,
       paddingBottom: 8,
     },
+  },
+  placeholder: {
+    color: theme.colors.onSurface,
+  },
+  selectionColor: {
+    color: theme.colors.secondary,
   },
   focused: {
     borderColor: theme.colors.primary,

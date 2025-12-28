@@ -1,7 +1,8 @@
-import { Pressable, ScrollView } from "react-native"
+import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
 import { IconSymbol } from "~/components/ui/icon-symbol"
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { type ThemeMode, useThemeStore } from "~/stores/theme.store"
@@ -16,8 +17,11 @@ export default function ThemeSettingsScreen() {
 
   // Helper function to get theme display name
   const getThemeDisplayName = (themeName: string): string => {
+    // Handle OLED suffix first (convert "Oled" to "OLED")
+    const processedName = themeName.replace(/Oled$/, "OLED")
+
     // Convert camelCase to Title Case
-    return themeName
+    return processedName
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, (str) => str.toUpperCase())
       .trim()

@@ -19,7 +19,7 @@ const sheetStyles = UnistylesSheet.create((theme) => ({
     padding: 16,
   },
   handleIndicator: {
-    backgroundColor: theme.colors.border,
+    backgroundColor: theme.colors.onSurface,
   },
 }))
 

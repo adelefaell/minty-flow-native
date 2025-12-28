@@ -1,15 +1,16 @@
 import { useState } from "react"
-import { Pressable, ScrollView, Switch } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { ScrollView } from "react-native"
+import { StyleSheet } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
+import { Pressable } from "~/components/ui/pressable"
+import { Switch } from "~/components/ui/switch"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { logger } from "~/utils/logger"
 import { Toast } from "~/utils/toast"
 
 export default function ToastDemoScreen() {
-  const { theme } = useUnistyles()
   const [showProgressBar, setShowProgressBar] = useState(true)
   const [showCloseIcon, setShowCloseIcon] = useState(true)
   const [position, setPosition] = useState<"top" | "bottom">("top")
@@ -33,57 +34,29 @@ export default function ToastDemoScreen() {
 
         {/* Settings Card */}
         <View style={styles.settingsCard}>
-          <View style={styles.settingRow}>
+          <Pressable
+            style={styles.settingRow}
+            onPress={() => setShowProgressBar(!showProgressBar)}
+          >
             <Text style={styles.settingLabel}>Show Progress Bar</Text>
             <Switch
               value={showProgressBar}
               onValueChange={setShowProgressBar}
-              trackColor={{
-                false: theme.colors.secondary,
-                true: theme.customColors.info,
-              }}
-              thumbColor={
-                showProgressBar
-                  ? theme.colors.onPrimary
-                  : theme.colors.onSecondary
-              }
             />
-          </View>
+          </Pressable>
 
-          <View style={styles.settingRow}>
+          <Pressable
+            style={styles.settingRow}
+            onPress={() => setShowCloseIcon(!showCloseIcon)}
+          >
             <Text style={styles.settingLabel}>Show Close Icon</Text>
-            <Switch
-              value={showCloseIcon}
-              onValueChange={setShowCloseIcon}
-              trackColor={{
-                false: theme.colors.secondary,
-                true: theme.customColors.info,
-              }}
-              thumbColor={
-                showCloseIcon
-                  ? theme.colors.onPrimary
-                  : theme.colors.onSecondary
-              }
-            />
-          </View>
+            <Switch value={showCloseIcon} onValueChange={setShowCloseIcon} />
+          </Pressable>
 
           <View style={styles.settingRow}>
             <Text style={styles.settingLabel}>Position: {position}</Text>
-            <Pressable
-              style={[
-                styles.toggleButton,
-                { backgroundColor: theme.customColors.info },
-              ]}
-              onPress={togglePosition}
-            >
-              <Text
-                style={[
-                  styles.toggleButtonText,
-                  { color: theme.colors.onPrimary },
-                ]}
-              >
-                TOGGLE
-              </Text>
+            <Pressable style={styles.toggleButton} onPress={togglePosition}>
+              <Text style={styles.toggleButtonText}>TOGGLE</Text>
             </Pressable>
           </View>
         </View>
@@ -96,10 +69,7 @@ export default function ToastDemoScreen() {
           <View style={styles.buttonGrid}>
             <Button
               variant="default"
-              style={[
-                styles.gridButton,
-                { backgroundColor: theme.customColors.success },
-              ]}
+              style={[styles.gridButton, styles.successButton]}
               onPress={() =>
                 Toast.success({
                   title: "Success message!",
@@ -109,7 +79,7 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>SUCCESS</Text>
+              <Text style={styles.buttonText}>SUCCESS</Text>
             </Button>
 
             <Button
@@ -124,15 +94,12 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>ERROR</Text>
+              <Text style={styles.buttonText}>ERROR</Text>
             </Button>
 
             <Button
               variant="secondary"
-              style={[
-                styles.gridButton,
-                { backgroundColor: theme.customColors.info },
-              ]}
+              style={[styles.gridButton, styles.infoButton]}
               onPress={() =>
                 Toast.info({
                   title: "Info message!",
@@ -142,15 +109,12 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>INFO</Text>
+              <Text style={styles.buttonText}>INFO</Text>
             </Button>
 
             <Button
               variant="outline"
-              style={[
-                styles.gridButton,
-                { backgroundColor: theme.customColors.warning },
-              ]}
+              style={[styles.gridButton, styles.warningButton]}
               onPress={() =>
                 Toast.warn({
                   title: "Warning message!",
@@ -160,7 +124,7 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onSurface }}>WARNING</Text>
+              <Text style={styles.buttonText}>WARNING</Text>
             </Button>
           </View>
         </View>
@@ -173,10 +137,7 @@ export default function ToastDemoScreen() {
           <View style={styles.buttonColumn}>
             <Button
               variant="default"
-              style={[
-                styles.fullButton,
-                { backgroundColor: theme.customColors.info },
-              ]}
+              style={[styles.fullButton, styles.infoButton]}
               onPress={() =>
                 Toast.show({
                   type: "success",
@@ -188,17 +149,12 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>
-                WITH SECONDARY TEXT
-              </Text>
+              <Text style={styles.buttonText}>WITH SECONDARY TEXT</Text>
             </Button>
 
             <Button
               variant="default"
-              style={[
-                styles.fullButton,
-                { backgroundColor: theme.customColors.success },
-              ]}
+              style={[styles.fullButton, styles.successButton]}
               onPress={() =>
                 Toast.show({
                   type: "info",
@@ -210,17 +166,12 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>
-                CUSTOM COLORS
-              </Text>
+              <Text style={styles.buttonText}>CUSTOM COLORS</Text>
             </Button>
 
             <Button
               variant="default"
-              style={[
-                styles.fullButton,
-                { backgroundColor: theme.customColors.warning },
-              ]}
+              style={[styles.fullButton, styles.warningButton]}
               onPress={() =>
                 Toast.show({
                   type: "warn",
@@ -233,9 +184,7 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onSurface }}>
-                LONG DURATION (8S)
-              </Text>
+              <Text style={styles.buttonText}>LONG DURATION (8S)</Text>
             </Button>
 
             <Button
@@ -259,10 +208,7 @@ export default function ToastDemoScreen() {
 
             <Button
               variant="default"
-              style={[
-                styles.fullButton,
-                { backgroundColor: theme.colors.error },
-              ]}
+              style={[styles.fullButton, styles.errorButton]}
               onPress={() =>
                 Toast.show({
                   type: "success",
@@ -277,9 +223,7 @@ export default function ToastDemoScreen() {
                 })
               }
             >
-              <Text style={{ color: theme.colors.onPrimary }}>
-                WITH CALLBACKS
-              </Text>
+              <Text style={styles.buttonText}>WITH CALLBACKS</Text>
             </Button>
           </View>
         </View>
@@ -292,10 +236,7 @@ export default function ToastDemoScreen() {
           <View style={styles.buttonColumn}>
             <Button
               variant="default"
-              style={[
-                styles.fullButton,
-                { backgroundColor: theme.colors.primary },
-              ]}
+              style={[styles.fullButton, styles.primaryButton]}
               onPress={() => {
                 Toast.show({
                   type: "success",
@@ -324,9 +265,7 @@ export default function ToastDemoScreen() {
                 }, 1000)
               }}
             >
-              <Text style={{ color: theme.colors.onPrimary }}>
-                MULTIPLE TOASTS
-              </Text>
+              <Text style={styles.buttonText}>MULTIPLE TOASTS</Text>
             </Button>
 
             <Button
@@ -334,9 +273,7 @@ export default function ToastDemoScreen() {
               onPress={() => Toast.hideAll()}
               style={styles.fullButton}
             >
-              <Text style={{ color: theme.colors.onPrimary }}>
-                HIDE ALL TOASTS
-              </Text>
+              <Text style={styles.buttonText}>HIDE ALL TOASTS</Text>
             </Button>
           </View>
         </View>
@@ -353,7 +290,6 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
   },
   scrollContent: {
-    padding: 24,
     paddingBottom: 40,
   },
   header: {
@@ -374,9 +310,11 @@ const styles = StyleSheet.create((theme) => ({
   },
   settingRow: {
     flexDirection: "row",
+    paddingInline: 16,
+    paddingBlock: 6,
+
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 8,
   },
   settingLabel: {
     fontSize: 16,
@@ -386,13 +324,34 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderRadius: theme.radius,
+    backgroundColor: theme.customColors.info,
   },
   toggleButtonText: {
     fontWeight: "bold",
     fontSize: 14,
+    color: theme.colors.onPrimary,
+  },
+  buttonText: {
+    color: theme.colors.onPrimary,
+  },
+  successButton: {
+    backgroundColor: theme.customColors.success,
+  },
+  infoButton: {
+    backgroundColor: theme.customColors.info,
+  },
+  warningButton: {
+    backgroundColor: theme.customColors.warning,
+  },
+  errorButton: {
+    backgroundColor: theme.colors.error,
+  },
+  primaryButton: {
+    backgroundColor: theme.colors.primary,
   },
   section: {
     marginBottom: 32,
+    paddingInline: 16,
   },
   sectionTitle: {
     marginBottom: 16,

@@ -21,6 +21,7 @@ export default function RootLayout() {
             headerTintColor: theme.colors.onSurface,
             headerTitleStyle: {
               color: theme.colors.onSurface,
+              fontWeight: "bold",
             },
           }}
         >
@@ -35,7 +36,7 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="(settings)/loans"
-            options={{ presentation: "modal", title: "Loans" }}
+            options={{ presentation: "modal", title: "Loans Fuck u samiz" }}
           />
           <Stack.Screen
             name="(settings)/categories"
@@ -67,7 +68,7 @@ export default function RootLayout() {
           />
         </Stack>
 
-        <StatusBar style="auto" />
+        <StatusBar style={theme.isDark ? "light" : "dark"} />
         <ToastManager />
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

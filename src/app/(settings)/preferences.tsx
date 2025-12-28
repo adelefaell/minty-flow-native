@@ -1,8 +1,9 @@
 import { type Href, useRouter } from "expo-router"
-import { Pressable, ScrollView } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { ScrollView } from "react-native"
+import { StyleSheet } from "react-native-unistyles"
 
 import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -33,7 +34,6 @@ const preferenceItems: PreferenceItem[] = [
 
 export default function PreferencesScreen() {
   const router = useRouter()
-  const { theme } = useUnistyles()
 
   const handleItemPress = (route: Href) => {
     router.push(route)
@@ -50,10 +50,6 @@ export default function PreferencesScreen() {
               pressed && styles.itemPressed,
             ]}
             onPress={() => handleItemPress(item.route)}
-            android_ripple={{
-              color: theme.colors.rippleColor,
-              foreground: true,
-            }}
           >
             <View native style={styles.itemIcon}>
               <IconSymbol name={item.icon} size={24} />

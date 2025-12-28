@@ -14,43 +14,43 @@ import { copyWith, lightenColor } from "../utils"
 /**
  * Minty Light themes - 16 variants based on primary colors
  * Pattern: Light surface with colored primary and pastel secondary
+ * iconName matches name (descriptive color name)
  */
 export const mintyLightSchemes: MintyColorScheme[] = PRIMARY_COLORS.map(
-  (primary, index) =>
+  (primaryEntry, index) =>
     copyWith(DEFAULT_LIGHT_BASE, {
-      name: `mintyLight${index}`,
-      iconName: `mintyLight${index}`,
-      primary,
-      secondary: ACCENT_COLORS[index],
-      onSecondary: "#33004f",
+      name: primaryEntry.lightThemeName,
+      iconName: primaryEntry.lightThemeName, // Light themes use their own name as iconName
+      primary: primaryEntry.color,
+      secondary: ACCENT_COLORS[index].color,
     }),
 )
 
 /**
  * Minty Dark themes - 16 variants with lightened primary colors
  * Pattern: Dark gray surface with lightened primary and very dark secondary
+ * iconName references the corresponding light theme
  */
 export const mintyDarkSchemes: MintyColorScheme[] = PRIMARY_COLORS.map(
-  (primary, index) =>
+  (primaryEntry) =>
     copyWith(DEFAULT_DARK_BASE, {
-      name: `mintyDark${index}`,
-      iconName: `mintyDark${index}`,
-      surface: "#141414",
-      primary: lightenColor(primary, 40),
-      secondary: "#050505",
+      name: primaryEntry.darkThemeName,
+      iconName: primaryEntry.lightThemeName, // Dark themes use corresponding light theme name as iconName
+      primary: lightenColor(primaryEntry.color, 40),
     }),
 )
 
 /**
  * Minty OLED themes - 16 variants optimized for OLED displays
  * Pattern: True black surface with lightened primary
+ * Name is dark theme name + "Oled" suffix
+ * iconName matches the dark theme (not the OLED name)
  */
 export const mintyOledSchemes: MintyColorScheme[] = PRIMARY_COLORS.map(
-  (primary, index) =>
+  (primaryEntry) =>
     copyWith(DEFAULT_OLED_BASE, {
-      name: `mintyOled${index}`,
-      iconName: `mintyOled${index}`,
-      primary: lightenColor(primary, 40),
-      secondary: "#000000",
+      name: `${primaryEntry.darkThemeName}Oled`,
+      iconName: primaryEntry.lightThemeName, // OLED themes use corresponding light theme name as iconName
+      primary: lightenColor(primaryEntry.color, 40),
     }),
 )

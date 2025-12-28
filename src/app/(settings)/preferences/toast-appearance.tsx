@@ -1,7 +1,9 @@
-import { Alert, Pressable, ScrollView, Switch } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { Alert, ScrollView } from "react-native"
+import { StyleSheet } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
+import { Pressable } from "~/components/ui/pressable"
+import { Switch } from "~/components/ui/switch"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import type { ToastPosition } from "~/stores/toast.store"
@@ -9,7 +11,6 @@ import { useToastAppearanceStore } from "~/stores/toast-appearance.store"
 import { Toast } from "~/utils/toast"
 
 export default function ToastAppearanceScreen() {
-  const { theme } = useUnistyles()
   const {
     position,
     showProgressBar,
@@ -140,10 +141,6 @@ export default function ToastAppearanceScreen() {
         <Pressable
           style={styles.settingRow}
           onPress={() => setShowProgressBar(!showProgressBar)}
-          android_ripple={{
-            color: theme.colors.rippleColor,
-            foreground: true,
-          }}
         >
           <View native style={styles.settingInfo}>
             <Text variant="p" style={styles.settingLabel}>
@@ -153,29 +150,13 @@ export default function ToastAppearanceScreen() {
               Visual countdown indicator
             </Text>
           </View>
-          <Switch
-            value={showProgressBar}
-            onValueChange={setShowProgressBar}
-            trackColor={{
-              false: theme.colors.secondary,
-              true: theme.colors.primary,
-            }}
-            thumbColor={
-              showProgressBar
-                ? theme.colors.onPrimary
-                : theme.colors.onSecondary
-            }
-          />
+          <Switch value={showProgressBar} onValueChange={setShowProgressBar} />
         </Pressable>
 
         {/* Close Icon */}
         <Pressable
           style={styles.settingRow}
           onPress={() => setShowCloseIcon(!showCloseIcon)}
-          android_ripple={{
-            color: theme.colors.rippleColor,
-            foreground: true,
-          }}
         >
           <View native style={styles.settingInfo}>
             <Text variant="p" style={styles.settingLabel}>
@@ -185,17 +166,7 @@ export default function ToastAppearanceScreen() {
               Manual dismiss button
             </Text>
           </View>
-          <Switch
-            value={showCloseIcon}
-            onValueChange={setShowCloseIcon}
-            trackColor={{
-              false: theme.colors.secondary,
-              true: theme.colors.primary,
-            }}
-            thumbColor={
-              showCloseIcon ? theme.colors.onPrimary : theme.colors.onSecondary
-            }
-          />
+          <Switch value={showCloseIcon} onValueChange={setShowCloseIcon} />
         </Pressable>
       </View>
 

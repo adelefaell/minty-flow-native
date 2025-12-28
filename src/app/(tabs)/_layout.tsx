@@ -4,7 +4,7 @@ import PagerView, {
   type PagerViewOnPageSelectedEvent,
 } from "react-native-pager-view"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
 import { IconSymbol } from "~/components/ui/icon-symbol"
@@ -31,7 +31,6 @@ const tabs: TabConfig[] = [
 const TabLayout = () => {
   const pagerRef = useRef<PagerView>(null)
   const [activePage, setActivePage] = useState(0)
-  const { theme } = useUnistyles()
   const insets = useSafeAreaInsets()
 
   const styles = StyleSheet.create((t) => ({
@@ -85,6 +84,10 @@ const TabLayout = () => {
       zIndex: 20,
       flexShrink: 0,
     },
+
+    centerButtonIcon: {
+      color: t.colors.onPrimary,
+    },
   }))
 
   const onPageSelected = (e: PagerViewOnPageSelectedEvent) => {
@@ -100,6 +103,9 @@ const TabLayout = () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
   }
+
+  const isActiveTab = (index: number) =>
+    activePage === index ? { opacity: 1 } : { opacity: 0.5 }
 
   return (
     <TooltipProvider>
@@ -127,14 +133,7 @@ const TabLayout = () => {
                 onPress={() => goTo(0)}
                 style={styles.tabButton}
               >
-                <IconSymbol
-                  name="circle.line"
-                  color={
-                    activePage === 0
-                      ? theme.colors.primary
-                      : theme.colors.onSecondary
-                  }
-                />
+                <IconSymbol name="circle.line" style={isActiveTab(0)} />
               </Button>
             </Tooltip>
 
@@ -145,14 +144,7 @@ const TabLayout = () => {
                 onPress={() => goTo(1)}
                 style={styles.tabButton}
               >
-                <IconSymbol
-                  name="chart.bar.fill"
-                  color={
-                    activePage === 1
-                      ? theme.colors.primary
-                      : theme.colors.onSecondary
-                  }
-                />
+                <IconSymbol name="chart.bar.fill" style={isActiveTab(1)} />
               </Button>
             </Tooltip>
 
@@ -168,7 +160,8 @@ const TabLayout = () => {
                 <IconSymbol
                   name="plus"
                   size={28}
-                  color={theme.colors.onPrimary}
+                  // color={theme.colors.onPrimary}
+                  style={styles.centerButtonIcon}
                 />
               </Button>
             </Tooltip>
@@ -180,14 +173,7 @@ const TabLayout = () => {
                 onPress={() => goTo(2)}
                 style={styles.tabButton}
               >
-                <IconSymbol
-                  name="wallet.bifold.fill"
-                  color={
-                    activePage === 2
-                      ? theme.colors.primary
-                      : theme.colors.onSecondary
-                  }
-                />
+                <IconSymbol name="wallet.bifold.fill" style={isActiveTab(2)} />
               </Button>
             </Tooltip>
 
@@ -198,14 +184,7 @@ const TabLayout = () => {
                 onPress={() => goTo(3)}
                 style={styles.tabButton}
               >
-                <IconSymbol
-                  name="gearshape.fill"
-                  color={
-                    activePage === 3
-                      ? theme.colors.primary
-                      : theme.colors.onSecondary
-                  }
-                />
+                <IconSymbol name="gearshape.fill" style={isActiveTab(3)} />
               </Button>
             </Tooltip>
           </View>

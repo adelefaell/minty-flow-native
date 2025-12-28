@@ -21,10 +21,22 @@ StyleSheet.configure({
   settings: {
     initialTheme: () => {
       const storedPreferences = themeStorage.getString("theme-preferences")
-      if (storedPreferences && storedPreferences in ALL_THEMES) {
-        return storedPreferences as ThemeKey
+      if (storedPreferences) {
+        try {
+          // Zustand persist stores data as JSON: {"state":{"themeMode":"..."},"version":0}
+          const parsed = JSON.parse(storedPreferences)
+          const themeMode = parsed?.state?.themeMode
+          if (themeMode && themeMode in ALL_THEMES) {
+            return themeMode as ThemeKey
+          }
+        } catch {
+          // If parsing fails, check if it's a direct string (legacy format)
+          if (storedPreferences in ALL_THEMES) {
+            return storedPreferences as ThemeKey
+          }
+        }
       }
-      return "mintyDark0"
+      return "electricLavender"
     },
   },
   themes: unistylesThemes,

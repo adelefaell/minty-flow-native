@@ -1,5 +1,4 @@
 import { useCallback } from "react"
-import { Pressable } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
 import { useAmountFormattingStore } from "~/stores/amount-formatting.store"
@@ -12,6 +11,7 @@ import {
   type BottomSheetModalProps,
 } from "./bottom-sheet"
 import { IconSymbol } from "./ui/icon-symbol"
+import { Pressable } from "./ui/pressable"
 import { Text } from "./ui/text"
 import { View } from "./ui/view"
 
@@ -55,11 +55,8 @@ const calculatorStyles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  keypadButtonPressed: {
-    backgroundColor: theme.colors.secondary,
-    opacity: 0.8,
-  },
   keypadButtonText: {
+    color: theme.colors.onSecondary,
     fontSize: 24,
     fontWeight: "bold",
   },
@@ -68,18 +65,16 @@ const calculatorStyles = StyleSheet.create((theme) => ({
   },
   functionButtonText: {
     fontSize: 20,
+    color: theme.colors.primary,
   },
   equalsButton: {
-    backgroundColor: theme.colors.primary,
-    color: theme.colors.onPrimary,
-  },
-  equalsButtonPressed: {
-    opacity: 0.8,
+    backgroundColor: theme.colors.secondary,
+    color: theme.colors.onSecondary,
   },
   equalsButtonText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: theme.colors.onSurface,
+    color: theme.colors.primary,
   },
   actionsContainer: {
     marginTop: 16,
@@ -274,40 +269,36 @@ export function CalculatorSheet({
           {/* Row 1 - C, +/-, %, ÷ */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={clear}
             >
               <Text style={calculatorStyles.functionButtonText}>C</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={handleToggleSign}
             >
               <Text style={calculatorStyles.functionButtonText}>+/-</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={() => performOperation(Operation.PERCENT)}
             >
               <Text style={calculatorStyles.functionButtonText}>%</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={() => performOperation(Operation.DIVIDE)}
             >
@@ -318,37 +309,27 @@ export function CalculatorSheet({
           {/* Row 2 - 7, 8, 9, × */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("7")}
             >
               <Text style={calculatorStyles.keypadButtonText}>7</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("8")}
             >
               <Text style={calculatorStyles.keypadButtonText}>8</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("9")}
             >
               <Text style={calculatorStyles.keypadButtonText}>9</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={() => performOperation(Operation.MULTIPLY)}
             >
@@ -359,37 +340,27 @@ export function CalculatorSheet({
           {/* Row 3 - 4, 5, 6, - */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("4")}
             >
               <Text style={calculatorStyles.keypadButtonText}>4</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("5")}
             >
               <Text style={calculatorStyles.keypadButtonText}>5</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("6")}
             >
               <Text style={calculatorStyles.keypadButtonText}>6</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={() => performOperation(Operation.MINUS)}
             >
@@ -400,37 +371,27 @@ export function CalculatorSheet({
           {/* Row 4 - 1, 2, 3, + */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("1")}
             >
               <Text style={calculatorStyles.keypadButtonText}>1</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("2")}
             >
               <Text style={calculatorStyles.keypadButtonText}>2</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("3")}
             >
               <Text style={calculatorStyles.keypadButtonText}>3</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.functionButton,
-                pressed && calculatorStyles.keypadButtonPressed,
               ]}
               onPress={() => performOperation(Operation.PLUS)}
             >
@@ -441,38 +402,28 @@ export function CalculatorSheet({
           {/* Row 5 - , (decimal), 0, ⌫ (backspace), = (equals) */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={handleDecimalPress}
             >
               <Text style={calculatorStyles.keypadButtonText}>.</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={() => handleNumberPress("0")}
             >
               <Text style={calculatorStyles.keypadButtonText}>0</Text>
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
-                calculatorStyles.keypadButton,
-                pressed && calculatorStyles.keypadButtonPressed,
-              ]}
+              style={() => [calculatorStyles.keypadButton]}
               onPress={handleBackspace}
               onLongPress={clear}
             >
               <IconSymbol name="delete.backward" size={24} />
             </Pressable>
             <Pressable
-              style={({ pressed }) => [
+              style={() => [
                 calculatorStyles.keypadButton,
                 calculatorStyles.equalsButton,
-                pressed && calculatorStyles.equalsButtonPressed,
               ]}
               onPress={handleEquals}
             >

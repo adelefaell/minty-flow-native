@@ -60,8 +60,8 @@ interface ThemeStore {
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set) => ({
-      // Default to dark theme
-      themeMode: "dark",
+      // Default to first dark theme (electricLavender)
+      themeMode: "electricLavender",
 
       // Actions
       setThemeMode: (mode) => {
@@ -69,7 +69,6 @@ export const useThemeStore = create<ThemeStore>()(
 
         // Update UnistylesRuntime directly when theme mode changes
         UnistylesRuntime.setTheme(mode)
-        themeStorage.set("theme-preferences", mode)
       },
     }),
     {
@@ -79,6 +78,12 @@ export const useThemeStore = create<ThemeStore>()(
         setItem: (name, value) => themeStorage.set(name, value),
         removeItem: (name) => themeStorage.remove(name),
       })),
+      onRehydrateStorage: () => (state) => {
+        // Sync UnistylesRuntime when store hydrates on app start
+        if (state?.themeMode) {
+          UnistylesRuntime.setTheme(state.themeMode)
+        }
+      },
     },
   ),
 )

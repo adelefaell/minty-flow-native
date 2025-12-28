@@ -58,7 +58,6 @@ export class ThemeFactory {
         this.mintyColorScheme.onSecondary || this.mintyColorScheme.onSurface,
       surface: this.mintyColorScheme.surface,
       onSurface: this.mintyColorScheme.onSurface,
-      background: this.mintyColorScheme.surface,
       error: this.mintyColorScheme.error || "#FF4040",
       onError: this.mintyColorScheme.onError || "#ffffff",
       border,

@@ -1,8 +1,8 @@
 import { Image } from "expo-image"
 import { useRouter } from "expo-router"
-import { Pressable } from "react-native"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
+import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { useProfileStore } from "~/stores/profile.store"
@@ -11,7 +11,6 @@ import { getInitials } from "~/utils/string-utils"
 export function ProfileSection() {
   const router = useRouter()
   const { name, imageUri } = useProfileStore()
-  const { theme } = useUnistyles()
 
   const displayName = name || "?"
   const initials = getInitials(displayName)
@@ -22,14 +21,7 @@ export function ProfileSection() {
 
   return (
     <View style={styles.profileSection}>
-      <Pressable
-        style={styles.profileInfo}
-        onPress={handlePress}
-        android_ripple={{
-          color: theme.colors.rippleColor,
-          foreground: true, // <-- KEY TO MAKE IT SHOW
-        }}
-      >
+      <Pressable style={styles.profileInfo} onPress={handlePress}>
         <View style={styles.avatar}>
           {imageUri ? (
             <Image

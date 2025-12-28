@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 
 import {
   BottomSheetModalComponent,
@@ -6,6 +6,8 @@ import {
 } from "~/components/bottom-sheet"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
+
+import { Pressable } from "./ui/pressable"
 
 /** // TODO: To be deleted later
  * Example Bottom Sheet 1: User Profile Sheet

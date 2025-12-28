@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react"
-import { Platform, Pressable, TouchableOpacity } from "react-native"
+import { Platform, TouchableOpacity } from "react-native"
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -8,11 +8,12 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated"
-import { StyleSheet, useUnistyles } from "react-native-unistyles"
+import { StyleSheet } from "react-native-unistyles"
 
 import { type Toast, useToastStore } from "~/stores/toast.store"
 
 import { IconSymbol, type IconSymbolName } from "./ui/icon-symbol"
+import { Pressable } from "./ui/pressable"
 import { Text } from "./ui/text"
 import { View } from "./ui/view"
 
@@ -24,8 +25,6 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onHide }: ToastItemProps) {
-  const { theme } = useUnistyles()
-
   // Animated values for custom animations with withSequence
   const translateY = useSharedValue(toast.position === "top" ? -100 : 100)
   const opacity = useSharedValue(0)
@@ -70,22 +69,6 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }
   }
 
-  const getToastStyles = () => {
-    const baseStyle = toastStyles.container
-    switch (toast.type) {
-      case "success":
-        return [baseStyle, toastStyles.success]
-      case "error":
-        return [baseStyle, toastStyles.error]
-      case "warn":
-        return [baseStyle, toastStyles.warn]
-      case "info":
-        return [baseStyle, toastStyles.info]
-      default:
-        return [baseStyle, toastStyles.default]
-    }
-  }
-
   const getIconName = (): IconSymbolName => {
     switch (toast.type) {
       case "success":
@@ -101,33 +84,43 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }
   }
 
-  const getIconColor = () => {
+  const getIconColorStyle = () => {
     switch (toast.type) {
       case "success":
-        return theme.customColors.success
+        return toastItemStyles.iconSuccess
       case "error":
-        return theme.colors.error
+        return toastItemStyles.iconError
       case "warn":
-        return theme.customColors.warning
+        return toastItemStyles.iconWarn
       case "info":
-        return theme.customColors.info
+        return toastItemStyles.iconInfo
       default:
-        return theme.colors.onSurface
+        return toastItemStyles.iconDefault
     }
   }
 
-  const getProgressBarColor = () => {
+  const getIconColor = () => {
+    const style = getIconColorStyle()
+    // Extract color from style object
+    // react-native-unistyles styles should expose the color property
+    if (style && typeof style === "object" && "color" in style) {
+      return (style as { color: string }).color
+    }
+    return undefined
+  }
+
+  const getProgressBarColorStyle = () => {
     switch (toast.type) {
       case "success":
-        return theme.customColors.success
+        return toastItemStyles.progressBarSuccess
       case "error":
-        return theme.colors.error
+        return toastItemStyles.progressBarError
       case "warn":
-        return theme.customColors.warning
+        return toastItemStyles.progressBarWarn
       case "info":
-        return theme.customColors.info
+        return toastItemStyles.progressBarInfo
       default:
-        return theme.colors.primary
+        return toastItemStyles.progressBarDefault
     }
   }
 
@@ -135,18 +128,12 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     // Enter animation sequence: slide in → small bounce → settle
     translateY.value = withSequence(
       withTiming(0, { duration: 300, easing: Easing.out(Easing.cubic) }),
-      // withSpring(toast.position === "top" ? -5 : 5, {
-      //   damping: 8,
-      //   stiffness: 100,
-      // }),
-      // withSpring(0, { damping: 10, stiffness: 100 }),
     )
 
     // Fade and scale in sequence
     opacity.value = withTiming(1, { duration: 300 })
     scale.value = withSequence(
       withTiming(1.05, { duration: 200, easing: Easing.out(Easing.ease) }),
-      // withSpring(1, { damping: 8, stiffness: 100 }),
     )
 
     // Progress bar animation
@@ -178,11 +165,16 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
 
   return (
     <AnimatedPressable
-      style={[getToastStyles(), animatedStyle]}
+      style={[toastStyles.container, animatedStyle]}
       onPress={handlePress}
     >
       <View native style={toastStyles.content}>
-        <IconSymbol name={getIconName()} size={24} color={getIconColor()} />
+        <IconSymbol
+          name={getIconName()}
+          size={24}
+          style={getIconColorStyle()}
+          color={getIconColor()}
+        />
         <View native style={toastStyles.textContainer}>
           {toast.title && <Text style={toastStyles.text1}>{toast.title}</Text>}
           {toast.description && (
@@ -195,7 +187,18 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             style={toastStyles.closeButton}
           >
-            <IconSymbol name="xmark" size={20} color={theme.colors.onSurface} />
+            <IconSymbol
+              name="xmark"
+              size={20}
+              style={toastItemStyles.closeIcon}
+              color={
+                toastItemStyles.closeIcon &&
+                typeof toastItemStyles.closeIcon === "object" &&
+                "color" in toastItemStyles.closeIcon
+                  ? (toastItemStyles.closeIcon as { color: string }).color
+                  : undefined
+              }
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -204,8 +207,8 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
           <Animated.View
             style={[
               toastStyles.progressBar,
+              getProgressBarColorStyle(),
               progressStyle,
-              { backgroundColor: getProgressBarColor() },
             ]}
           />
         </View>
@@ -247,6 +250,42 @@ export function ToastManager() {
     </View>
   )
 }
+
+const toastItemStyles = StyleSheet.create((theme) => ({
+  iconSuccess: {
+    color: theme.customColors.success,
+  },
+  iconError: {
+    color: theme.colors.error,
+  },
+  iconWarn: {
+    color: theme.customColors.warning,
+  },
+  iconInfo: {
+    color: theme.customColors.info,
+  },
+  iconDefault: {
+    color: theme.colors.onSurface,
+  },
+  closeIcon: {
+    color: theme.colors.onSurface,
+  },
+  progressBarSuccess: {
+    backgroundColor: theme.customColors.success,
+  },
+  progressBarError: {
+    backgroundColor: theme.colors.error,
+  },
+  progressBarWarn: {
+    backgroundColor: theme.customColors.warning,
+  },
+  progressBarInfo: {
+    backgroundColor: theme.customColors.info,
+  },
+  progressBarDefault: {
+    backgroundColor: theme.colors.primary,
+  },
+}))
 
 const toastStyles = StyleSheet.create((theme) => ({
   overlay: {
@@ -302,6 +341,7 @@ const toastStyles = StyleSheet.create((theme) => ({
     alignItems: "center",
     minHeight: 60,
     pointerEvents: "auto",
+    backgroundColor: theme.colors.secondary,
     _web: {
       boxShadow: theme.colors.boxShadow,
       cursor: "pointer",
@@ -315,31 +355,6 @@ const toastStyles = StyleSheet.create((theme) => ({
     _android: {
       elevation: 8,
     },
-  },
-  success: {
-    backgroundColor: theme.colors.secondary,
-    // borderLeftColor: theme.chart2,
-    // borderLeftWidth: 4,
-  },
-  error: {
-    backgroundColor: theme.colors.secondary,
-    // borderLeftColor: theme.colors.error,
-    // borderLeftWidth: 4,
-  },
-  warn: {
-    backgroundColor: theme.colors.secondary,
-    // borderLeftColor: theme.chart4,
-    // borderLeftWidth: 4,
-  },
-  info: {
-    backgroundColor: theme.colors.secondary,
-    // borderLeftColor: theme.chart1,
-    // borderLeftWidth: 4,
-  },
-  default: {
-    backgroundColor: theme.colors.secondary,
-    // borderLeftColor: theme.colors.primary,
-    // borderLeftWidth: 4,
   },
   content: {
     flex: 1,
