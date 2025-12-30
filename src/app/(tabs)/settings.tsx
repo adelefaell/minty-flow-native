@@ -1,11 +1,68 @@
-import { useRouter } from "expo-router"
+import { type Href, useRouter } from "expo-router"
 import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
+import { ActionItem } from "~/components/action-item"
 import { ProfileSection } from "~/components/profile-section"
-import { SettingsItem } from "~/components/settings-item"
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
+
+interface SettingsItem {
+  id: string
+  title: string
+  description?: string
+  route: Href
+  icon: IconSymbolName
+}
+
+const moneyManagementItems: SettingsItem[] = [
+  {
+    id: "loans",
+    title: "Loans",
+    description: "Track money lent and borrowed",
+    route: "/(settings)/loans",
+    icon: "dollarsign.circle",
+  },
+  {
+    id: "categories",
+    title: "Categories",
+    description: "Manage your transaction categories",
+    route: "/(settings)/categories",
+    icon: "square.grid.2x2",
+  },
+  {
+    id: "tags",
+    title: "Tags",
+    description: "Manage your transaction tags",
+    route: "/(settings)/tags",
+    icon: "tag",
+  },
+  {
+    id: "trash",
+    title: "Trash",
+    description: "View and restore deleted transactions",
+    route: "/(settings)/trash",
+    icon: "trash",
+  },
+]
+
+const otherSettingsItems: SettingsItem[] = [
+  {
+    id: "preferences",
+    title: "Preferences",
+    description: "General preferences",
+    route: "/(settings)/(preferences)/preferences",
+    icon: "gearshape.fill",
+  },
+  {
+    id: "data-management",
+    title: "Data Management",
+    description: "Backup, import, and export your data",
+    route: "/(settings)/data-management",
+    icon: "server.rack",
+  },
+]
 
 export default function SettingsScreen() {
   const router = useRouter()
@@ -28,33 +85,15 @@ export default function SettingsScreen() {
           MONEY MANAGEMENT
         </Text>
         <View style={styles.sectionContent}>
-          <SettingsItem
-            icon="dollarsign.circle"
-            title="Loans"
-            description="Track money lent and borrowed"
-            onPress={() => router.push("/(settings)/loans")}
-          />
-
-          <SettingsItem
-            icon="square.grid.2x2"
-            title="Categories"
-            description="Manage your transaction categories"
-            onPress={() => router.push("/(settings)/categories")}
-          />
-
-          <SettingsItem
-            icon="tag"
-            title="Tags"
-            description="Manage your transaction tags"
-            onPress={() => router.push("/(settings)/tags")}
-          />
-
-          <SettingsItem
-            icon="trash"
-            title="Trash"
-            description="View and restore deleted transactions"
-            onPress={() => router.push("/(settings)/trash")}
-          />
+          {moneyManagementItems.map((item) => (
+            <ActionItem
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              // description={item.description}
+              onPress={() => router.push(item.route)}
+            />
+          ))}
         </View>
       </View>
 
@@ -64,20 +103,15 @@ export default function SettingsScreen() {
           OTHER SETTINGS
         </Text>
         <View style={styles.sectionContent}>
-          <SettingsItem
-            icon="gearshape.fill"
-            title="Preferences"
-            description="General preferences"
-            onPress={() => router.push("/(settings)/preferences")}
-          />
-
-          <SettingsItem
-            icon="server.rack"
-            title="Data Management"
-            description="Backup, import, and export your data"
-            onPress={() => router.push("/(settings)/data-management")}
-            soon={true}
-          />
+          {otherSettingsItems.map((item) => (
+            <ActionItem
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              // description={item.description}
+              onPress={() => router.push(item.route)}
+            />
+          ))}
         </View>
       </View>
     </ScrollView>

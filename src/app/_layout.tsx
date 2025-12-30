@@ -51,15 +51,15 @@ export default function RootLayout() {
             options={{ presentation: "modal", title: "Trash" }}
           />
           <Stack.Screen
-            name="(settings)/preferences"
+            name="(settings)/(preferences)/preferences"
             options={{ presentation: "modal", title: "Preferences" }}
           />
           <Stack.Screen
-            name="(settings)/preferences/theme"
+            name="(settings)/(preferences)/theme"
             options={{ presentation: "modal", title: "Theme" }}
           />
           <Stack.Screen
-            name="(settings)/preferences/toast-appearance"
+            name="(settings)/(preferences)/toast-appearance"
             options={{ presentation: "modal", title: "Toast Appearance" }}
           />
           <Stack.Screen

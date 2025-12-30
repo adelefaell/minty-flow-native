@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { ScrollView } from "react-native"
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
+import { SpringButton } from "~/components/spring-button"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -16,7 +18,6 @@ export default function ThemeSettingsScreen() {
   const { themeMode, setThemeMode } = useThemeStore()
   const insets = useSafeAreaInsets()
 
-  // Determine initial category based on current theme
   const getCategoryForTheme = (themeName: string): string => {
     for (const [category, groups] of Object.entries(THEME_GROUPS)) {
       if (
@@ -30,9 +31,7 @@ export default function ThemeSettingsScreen() {
     return Object.keys(THEME_GROUPS)[0] || "Minty"
   }
 
-  // Determine initial variant based on current theme
   const getVariantForTheme = (themeName: string): ThemeVariant => {
-    // Check for Catppuccin themes first
     if (themeName.includes("Frappe") || themeName.includes("frappe")) {
       return "Light"
     }
@@ -42,8 +41,6 @@ export default function ThemeSettingsScreen() {
     if (themeName.includes("Mocha") || themeName.includes("mocha")) {
       return "OLED"
     }
-
-    // For Minty themes
     if (themeName.includes("Oled") || themeName.endsWith("Oled")) {
       return "OLED"
     }
@@ -69,7 +66,6 @@ export default function ThemeSettingsScreen() {
     setSelectedVariant(getVariantForTheme(mode))
   }
 
-  // Helper function to get theme display name
   const getThemeDisplayName = (themeName: string): string => {
     const processedName = themeName.replace(/Oled$/, "OLED")
     return processedName
@@ -78,7 +74,6 @@ export default function ThemeSettingsScreen() {
       .trim()
   }
 
-  // Get themes for selected category and variant
   const getThemesForVariant = (): MintyColorScheme[] => {
     const groups = THEME_GROUPS[selectedCategory] || []
 
@@ -194,61 +189,13 @@ export default function ThemeSettingsScreen() {
       ]}
       showsVerticalScrollIndicator={false}
     >
-      {/* Category Tabs */}
-      <View style={styles.categoryTabs}>
-        {Object.keys(THEME_GROUPS).map((category) => {
-          const isSelected = selectedCategory === category
-          return (
-            <Pressable
-              key={category}
-              style={[
-                styles.categoryTab,
-                isSelected && styles.categoryTabSelected,
-              ]}
-              onPress={() => handleCategoryChange(category)}
-            >
-              <Text
-                style={[
-                  styles.categoryTabText,
-                  isSelected && styles.categoryTabTextSelected,
-                ]}
-              >
-                {category}
-              </Text>
-            </Pressable>
-          )
-        })}
-      </View>
-
-      {/* Variant Tabs */}
-      <View style={styles.variantTabs}>
-        {(["Light", "Dark", "OLED"] as ThemeVariant[]).map((variant) => {
-          const isSelected = selectedVariant === variant
-          return (
-            <Pressable
-              key={variant}
-              style={[
-                styles.variantTab,
-                isSelected && styles.variantTabSelected,
-              ]}
-              onPress={() => handleVariantChange(variant)}
-            >
-              <Text
-                style={[
-                  styles.variantTabText,
-                  isSelected && styles.variantTabTextSelected,
-                ]}
-              >
-                {variant}
-              </Text>
-            </Pressable>
-          )
-        })}
-      </View>
-
-      {/* Selected Theme Title */}
-      <View style={styles.selectedThemeContainer}>
-        <Text style={styles.selectedThemeTitle}>
+      {/* Compact Header with Current Theme */}
+      <Animated.View
+        entering={FadeIn.delay(50).duration(400)}
+        style={styles.header}
+      >
+        <Text style={styles.headerLabel}>Current theme</Text>
+        <Text style={styles.headerTheme}>
           {(() => {
             const selected = categoryThemes.find((t) => t.name === themeMode)
             if (selected) {
@@ -263,58 +210,110 @@ export default function ThemeSettingsScreen() {
             return "Select a theme"
           })()}
         </Text>
-      </View>
+      </Animated.View>
 
-      {/* Color Grid */}
-      <View style={styles.colorGrid}>
-        {categoryThemes.map((scheme) => {
-          const isSelected = themeMode === scheme.name
+      {/* Segmented Control for Categories */}
+      <View style={styles.segmentedControl}>
+        {Object.keys(THEME_GROUPS).map((category) => {
+          const isSelected = selectedCategory === category
           return (
             <Pressable
-              key={scheme.name}
-              style={[styles.colorCard, isSelected && styles.colorCardSelected]}
-              onPress={() => handleThemeChange(scheme.name as ThemeMode)}
+              key={category}
+              style={[styles.segment, isSelected && styles.segmentSelected]}
+              onPress={() => handleCategoryChange(category)}
             >
-              <View
+              <Text
                 style={[
-                  styles.colorSwatch,
-                  { backgroundColor: scheme.primary },
-                  isSelected && styles.colorSwatchSelected,
+                  styles.segmentText,
+                  isSelected && styles.segmentTextSelected,
                 ]}
-              />
+              >
+                {category}
+              </Text>
             </Pressable>
           )
         })}
       </View>
 
+      {/* Compact Variant Pills */}
+      <View style={styles.variantPills}>
+        {(["Light", "Dark", "OLED"] as ThemeVariant[]).map((variant) => {
+          const isSelected = selectedVariant === variant
+          return (
+            <Pressable
+              key={variant}
+              style={[styles.pill, isSelected && styles.pillSelected]}
+              onPress={() => handleVariantChange(variant)}
+            >
+              <Text
+                style={[styles.pillText, isSelected && styles.pillTextSelected]}
+              >
+                {variant}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+
+      {/* Compact Color Grid */}
+      <Animated.View
+        style={styles.colorGrid}
+        entering={FadeInDown.delay(150).duration(400)}
+      >
+        {categoryThemes.map((scheme) => {
+          const isSelected = themeMode === scheme.name
+          return (
+            <SpringButton
+              key={scheme.name}
+              style={[
+                styles.colorOption,
+                isSelected && styles.colorOptionSelected,
+              ]}
+              onPress={() => handleThemeChange(scheme.name as ThemeMode)}
+            >
+              <View
+                style={[
+                  styles.colorCircle,
+                  { backgroundColor: scheme.primary },
+                ]}
+              />
+              {isSelected && <View style={styles.checkmark} />}
+            </SpringButton>
+          )
+        })}
+      </Animated.View>
+
       {/* Standalone Themes */}
       {Object.keys(STANDALONE_THEMES).length > 0 && (
-        <View style={styles.standaloneSection}>
-          <Text style={styles.standaloneTitle}>Other themes</Text>
-          <View style={styles.standaloneGrid}>
+        <Animated.View
+          entering={FadeInDown.delay(150).duration(400)}
+          style={styles.standaloneSection}
+        >
+          <Text style={styles.sectionTitle}>Other</Text>
+          <View style={styles.colorGrid}>
             {Object.values(STANDALONE_THEMES).map((scheme) => {
               const isSelected = themeMode === scheme.name
               return (
-                <Pressable
+                <SpringButton
                   key={scheme.name}
                   style={[
-                    styles.standaloneCard,
-                    isSelected && styles.standaloneCardSelected,
+                    styles.colorOption,
+                    isSelected && styles.colorOptionSelected,
                   ]}
                   onPress={() => handleThemeChange(scheme.name as ThemeMode)}
                 >
                   <View
                     style={[
-                      styles.colorSwatch,
+                      styles.colorCircle,
                       { backgroundColor: scheme.primary },
-                      isSelected && styles.colorSwatchSelected,
                     ]}
                   />
-                </Pressable>
+                  {isSelected && <View style={styles.checkmark} />}
+                </SpringButton>
               )
             })}
           </View>
-        </View>
+        </Animated.View>
       )}
     </ScrollView>
   )
@@ -326,129 +325,113 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.surface,
   },
   content: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    gap: 24,
   },
-  categoryTabs: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 16,
-    justifyContent: "center",
-  },
-  categoryTab: {
-    flexDirection: "row",
+  header: {
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 25,
-    borderWidth: 1.5,
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.secondary,
-    gap: 6,
+    paddingVertical: 8,
   },
-
-  categoryTabSelected: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+  headerLabel: {
+    fontSize: 13,
+    color: theme.colors.onSurface,
+    opacity: 0.6,
+    marginBottom: 4,
   },
-  categoryTabText: {
-    fontSize: 14,
-    fontWeight: "bold",
+  headerTheme: {
+    fontSize: 20,
+    fontWeight: "700",
     color: theme.colors.onSurface,
   },
-  categoryTabTextSelected: {
-    color: theme.colors.onPrimary,
+  segmentedControl: {
+    flexDirection: "row",
+    backgroundColor: theme.colors.secondary,
+    borderRadius: 12,
+    padding: 4,
   },
-  variantTabs: {
+  segment: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  segmentSelected: {
+    backgroundColor: theme.colors.primary,
+  },
+  segmentText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: theme.colors.onSurface,
+    opacity: 0.6,
+  },
+  segmentTextSelected: {
+    color: theme.colors.onPrimary,
+    opacity: 1,
+  },
+  variantPills: {
     flexDirection: "row",
     gap: 8,
-    marginBottom: 24,
     justifyContent: "center",
   },
-  variantTab: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: theme.colors.primary,
+  pill: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
     backgroundColor: theme.colors.secondary,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  variantTabSelected: {
+  pillSelected: {
     backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
   },
-  variantTabText: {
-    fontSize: 14,
-    fontWeight: "bold",
+  pillText: {
+    fontSize: 13,
+    fontWeight: "600",
     color: theme.colors.onSurface,
+    opacity: 0.7,
   },
-  variantTabTextSelected: {
+  pillTextSelected: {
     color: theme.colors.onPrimary,
+    opacity: 1,
   },
   colorGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 16,
-    marginBottom: 32,
+    gap: 12,
+    justifyContent: "center",
   },
-  colorCard: {
-    width: "30%",
+  colorOption: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
-    gap: 8,
-    padding: 12,
-    borderRadius: theme.radius,
-    backgroundColor: "transparent",
-  },
-  colorCardSelected: {
+    justifyContent: "center",
     backgroundColor: theme.colors.secondary,
   },
-  colorSwatch: {
-    width: 64,
-    height: 64,
-    borderRadius: theme.radius,
-    borderWidth: 2,
-    borderColor: "transparent",
+  colorOptionSelected: {
+    backgroundColor: theme.colors.primary,
   },
-  colorSwatchSelected: {
-    borderColor: theme.colors.primary,
-    borderWidth: 3,
+  colorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  selectedThemeContainer: {
-    alignItems: "center",
-    marginBottom: 24,
-    paddingVertical: 12,
-  },
-  selectedThemeTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-    textAlign: "center",
+  checkmark: {
+    position: "absolute",
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: theme.colors.onPrimary,
+    bottom: 4,
+    right: 4,
   },
   standaloneSection: {
-    marginTop: 8,
-  },
-  standaloneTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-    marginBottom: 16,
-  },
-  standaloneGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 12,
   },
-  standaloneCard: {
-    width: "30%",
-    alignItems: "center",
-    gap: 8,
-    padding: 12,
-    borderRadius: theme.radius,
-    backgroundColor: "transparent",
-  },
-  standaloneCardSelected: {
-    backgroundColor: theme.colors.secondary,
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: theme.colors.onSurface,
+    opacity: 0.7,
+    textAlign: "center",
   },
 }))

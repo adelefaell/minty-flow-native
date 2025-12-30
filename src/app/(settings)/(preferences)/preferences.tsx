@@ -2,15 +2,14 @@ import { type Href, useRouter } from "expo-router"
 import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
-import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
-import { Pressable } from "~/components/ui/pressable"
-import { Text } from "~/components/ui/text"
+import { ActionItem } from "~/components/action-item"
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
 import { View } from "~/components/ui/view"
 
 interface PreferenceItem {
   id: string
   title: string
-  subtitle?: string
+  description?: string
   route: Href
   icon: IconSymbolName
 }
@@ -19,15 +18,15 @@ const preferenceItems: PreferenceItem[] = [
   {
     id: "theme",
     title: "Theme",
-    subtitle: "Choose light, dark, or device adaptive theme",
-    route: "/(settings)/preferences/theme",
+    description: "Choose your preferred theme",
+    route: "/(settings)/(preferences)/theme",
     icon: "paintbrush.fill",
   },
   {
     id: "toast",
     title: "Toast Appearance",
-    subtitle: "Configure notification appearance and behavior",
-    route: "/(settings)/preferences/toast-appearance",
+    description: "Configure your preferred toast appearance",
+    route: "/(settings)/(preferences)/toast-appearance",
     icon: "bell.fill",
   },
 ]
@@ -35,35 +34,18 @@ const preferenceItems: PreferenceItem[] = [
 export default function PreferencesScreen() {
   const router = useRouter()
 
-  const handleItemPress = (route: Href) => {
-    router.push(route)
-  }
-
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View native style={styles.itemsList}>
-        {preferenceItems.map((item) => (
-          <Pressable
+        {preferenceItems.map((item, index) => (
+          <ActionItem
+            index={index}
             key={item.id}
-            style={({ pressed }) => [
-              styles.item,
-              pressed && styles.itemPressed,
-            ]}
-            onPress={() => handleItemPress(item.route)}
-          >
-            <View native style={styles.itemIcon}>
-              <IconSymbol name={item.icon} size={24} />
-            </View>
-            <View native style={styles.itemContent}>
-              <Text style={styles.itemTitle}>{item.title}</Text>
-              {/* {item.subtitle && (
-                <Text style={styles.itemSubtitle}>{item.subtitle}</Text>
-              )} */}
-            </View>
-            <View native style={styles.itemChevron}>
-              <IconSymbol name="chevron.right" size={20} />
-            </View>
-          </Pressable>
+            icon={item.icon}
+            title={item.title}
+            // description={item.description}
+            onPress={() => router.push(item.route)}
+          />
         ))}
       </View>
     </ScrollView>
@@ -116,7 +98,7 @@ const styles = StyleSheet.create((theme) => ({
     fontWeight: "400",
     color: theme.colors.onSurface,
   },
-  itemSubtitle: {
+  itemDescription: {
     fontSize: 13,
     color: theme.colors.onSecondary,
     lineHeight: 18,

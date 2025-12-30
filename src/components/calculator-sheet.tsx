@@ -66,6 +66,7 @@ const calculatorStyles = StyleSheet.create((theme) => ({
   functionButtonText: {
     fontSize: 20,
     color: theme.colors.primary,
+    fontWeight: "bold",
   },
   equalsButton: {
     backgroundColor: theme.colors.secondary,
