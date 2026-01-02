@@ -71,6 +71,10 @@ const MAPPING = defineIconMapping({
   "lock.fill": "lock",
   // Numpad icon
   dialpad: "dialpad",
+  // Location icon
+  "location.fill": "map-marker",
+  // Hashtag icon
+  number: "pound",
 } as const)
 
 /**

@@ -24,6 +24,13 @@ const appearanceItems: PreferenceItem[] = [
     icon: "paintbrush.fill",
   },
   {
+    id: "money-formatting",
+    title: "Money Formatting",
+    description: "Configure how money is displayed",
+    route: "/(settings)/(preferences)/money-formatting",
+    icon: "number",
+  },
+  {
     id: "numpad",
     title: "Numpad",
     description: "Configure numpad layout",
@@ -46,6 +53,13 @@ const otherPreferenceItems: PreferenceItem[] = [
     description: "Manage privacy and security settings",
     route: "/(settings)/(preferences)/privacy",
     icon: "lock.fill",
+  },
+  {
+    id: "transaction-location",
+    title: "Transaction Location",
+    description: "Configure transaction location settings",
+    route: "/(settings)/(preferences)/transaction-location",
+    icon: "location.fill",
   },
   {
     id: "exchange-rates",

@@ -114,6 +114,14 @@ export default function RootLayout() {
             name="(settings)/(preferences)/privacy"
             options={{ presentation: "modal", title: "Privacy" }}
           />
+          <Stack.Screen
+            name="(settings)/(preferences)/money-formatting"
+            options={{ presentation: "modal", title: "Money Formatting" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/transaction-location"
+            options={{ presentation: "modal", title: "Transaction Location" }}
+          />
         </Stack>
 
         <StatusBar style={theme.isDark ? "light" : "dark"} animated />

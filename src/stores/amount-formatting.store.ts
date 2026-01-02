@@ -1,5 +1,18 @@
+import { createMMKV } from "react-native-mmkv"
 import { create } from "zustand"
-import { devtools, persist } from "zustand/middleware"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
+
+/**
+ * MMKV storage instance for amount formatting preferences.
+ *
+ * This instance is optimized for storing formatting settings with high performance.
+ * MMKV is ~30x faster than AsyncStorage and provides synchronous operations.
+ *
+ * @see https://github.com/mrousavy/react-native-mmkv
+ */
+export const amountFormattingStorage = createMMKV({
+  id: "amount-formatting-storage",
+})
 
 export type MoneyFormat = "symbol" | "code" | "name"
 
@@ -34,6 +47,12 @@ export const useAmountFormattingStore = create<AmountFormattingStore>()(
       }),
       {
         name: "amount-formatting-store",
+        // Use the custom MMKV instance for storage
+        storage: createJSONStorage(() => ({
+          getItem: (name) => amountFormattingStorage.getString(name) ?? null,
+          setItem: (name, value) => amountFormattingStorage.set(name, value),
+          removeItem: (name) => amountFormattingStorage.remove(name),
+        })),
       },
     ),
     { name: "amount-formatting-store-dev" },
