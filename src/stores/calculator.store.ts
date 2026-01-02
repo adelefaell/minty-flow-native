@@ -145,19 +145,20 @@ export const useCalculatorStore = create<CalculatorStore>()(
             return
           }
 
+          // If we're waiting for an operand (just pressed an operation and no number typed),
+          // simply replace the current operation with the new one
+          if (state.waitingForOperand) {
+            state.operation = nextOperation
+            return
+          }
+
           // previousValue is guaranteed to be non-null here due to check above
           const currentValue = state.previousValue
-
-          // If we're waiting for an operand (just pressed an operation),
-          // use previousValue as both operands to complete the previous operation
-          const secondOperand = state.waitingForOperand
-            ? currentValue
-            : inputValue
 
           const result = calculateOperation(
             state.operation as Operation,
             currentValue,
-            secondOperand,
+            inputValue,
           )
 
           // Check for division by zero or invalid result

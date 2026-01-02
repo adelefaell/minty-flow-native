@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback } from "react"
 import { Platform, TouchableOpacity } from "react-native"
 import Animated, {
   Easing,
@@ -9,13 +9,14 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 import { StyleSheet } from "react-native-unistyles"
+import { scheduleOnRN, scheduleOnUI } from "react-native-worklets"
 
 import { type Toast, useToastStore } from "~/stores/toast.store"
 
-import { IconSymbol, type IconSymbolName } from "./ui/icon-symbol"
-import { Pressable } from "./ui/pressable"
-import { Text } from "./ui/text"
-import { View } from "./ui/view"
+import { IconSymbol, type IconSymbolName } from "./icon-symbol"
+import { Pressable } from "./pressable"
+import { Text } from "./text"
+import { View } from "./view"
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
@@ -25,13 +26,26 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onHide }: ToastItemProps) {
+  // Capture toast properties for use in worklets
+  const toastPosition = toast.position
+  const toastAutoHide = toast.autoHide
+  const toastShowProgressBar = toast.showProgressBar
+  const toastVisibilityTime = toast.visibilityTime
+  const toastId = toast.id
+
   // Animated values for custom animations with withSequence
-  const translateY = useSharedValue(toast.position === "top" ? -100 : 100)
+  const translateY = useSharedValue(toastPosition === "top" ? -100 : 100)
   const opacity = useSharedValue(0)
   const scale = useSharedValue(0.8)
   const progressWidth = useSharedValue(100)
+  const autoHideTimer = useSharedValue(0)
+  const hasAnimated = useSharedValue(false)
 
   const handleHide = useCallback(() => {
+    onHide(toastId)
+  }, [onHide, toastId])
+
+  const triggerHide = useCallback(() => {
     // Exit animation sequence: scale down slightly → fade and slide out
     scale.value = withTiming(0.95, { duration: 100 })
     opacity.value = withDelay(
@@ -40,17 +54,20 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     )
     translateY.value = withDelay(
       50,
-      withTiming(toast.position === "top" ? -100 : 100, {
+      withTiming(toastPosition === "top" ? -100 : 100, {
         duration: 200,
         easing: Easing.in(Easing.ease),
       }),
     )
 
     // Wait for animation to complete before hiding
-    setTimeout(() => {
-      onHide(toast.id)
-    }, 300)
-  }, [onHide, toast.id, toast.position, opacity, scale, translateY])
+    progressWidth.value = withDelay(
+      300,
+      withTiming(0, { duration: 0 }, () => {
+        scheduleOnRN(handleHide)
+      }),
+    )
+  }, [handleHide, toastPosition, opacity, scale, translateY, progressWidth])
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }, { scale: scale.value }],
@@ -65,7 +82,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     if (toast.onPress) {
       toast.onPress()
     } else {
-      handleHide()
+      triggerHide()
     }
   }
 
@@ -124,49 +141,60 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }
   }
 
-  useEffect(() => {
-    // Enter animation sequence: slide in → small bounce → settle
-    translateY.value = withSequence(
-      withTiming(0, { duration: 300, easing: Easing.out(Easing.cubic) }),
-    )
+  const handleLayout = useCallback(() => {
+    scheduleOnUI(() => {
+      "worklet"
+      if (hasAnimated.value) return
+      hasAnimated.value = true
 
-    // Fade and scale in sequence
-    opacity.value = withTiming(1, { duration: 300 })
-    scale.value = withSequence(
-      withTiming(1.05, { duration: 200, easing: Easing.out(Easing.ease) }),
-    )
+      // Enter animation sequence: slide in → small bounce → settle
+      translateY.value = withSequence(
+        withTiming(0, { duration: 300, easing: Easing.out(Easing.cubic) }),
+      )
 
-    // Progress bar animation
-    if (toast.showProgressBar && toast.autoHide) {
-      progressWidth.value = withTiming(0, {
-        duration: toast.visibilityTime,
-        easing: Easing.linear,
-      })
-    }
+      // Fade and scale in sequence
+      opacity.value = withTiming(1, { duration: 300 })
+      scale.value = withSequence(
+        withTiming(1.05, { duration: 200, easing: Easing.out(Easing.ease) }),
+      )
 
-    // Auto-hide with exit animation
-    if (toast.autoHide) {
-      const timer = setTimeout(() => {
-        handleHide()
-      }, toast.visibilityTime)
+      // Progress bar animation
+      if (toastShowProgressBar && toastAutoHide) {
+        progressWidth.value = withTiming(0, {
+          duration: toastVisibilityTime,
+          easing: Easing.linear,
+        })
+      }
 
-      return () => clearTimeout(timer)
-    }
+      // Auto-hide with exit animation
+      if (toastAutoHide) {
+        // Use a dedicated timer for auto-hide
+        autoHideTimer.value = withDelay(
+          toastVisibilityTime,
+          withTiming(1, { duration: 0 }, () => {
+            scheduleOnRN(triggerHide)
+          }),
+        )
+      }
+    })
   }, [
-    opacity,
-    progressWidth,
-    scale,
-    toast.autoHide,
-    toast.showProgressBar,
-    toast.visibilityTime,
+    hasAnimated,
     translateY,
-    handleHide,
+    opacity,
+    scale,
+    progressWidth,
+    autoHideTimer,
+    toastShowProgressBar,
+    toastAutoHide,
+    toastVisibilityTime,
+    triggerHide,
   ])
 
   return (
     <AnimatedPressable
       style={[toastStyles.container, animatedStyle]}
       onPress={handlePress}
+      onLayout={handleLayout}
     >
       <View native style={toastStyles.content}>
         <IconSymbol
@@ -183,7 +211,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
         </View>
         {toast.showCloseIcon && (
           <TouchableOpacity
-            onPress={handleHide}
+            onPress={triggerHide}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             style={toastStyles.closeButton}
           >

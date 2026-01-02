@@ -44,6 +44,7 @@ const MAPPING = defineIconMapping({
   "camera.fill": "camera",
   checkmark: "check",
   plus: "plus",
+  minus: "minus",
   "sun.max.fill": "weather-sunny",
   "moon.fill": "weather-night",
   "desktopcomputer.and.iphone": "devices",
@@ -51,6 +52,25 @@ const MAPPING = defineIconMapping({
   "cloud.fill": "cloud",
   "heart.fill": "heart",
   "crown.fill": "crown",
+  // Calculator icons
+  "c.circle": "alpha-c",
+  plusminus: "plus-minus-variant",
+  percent: "percent",
+  divide: "division",
+  equal: "equal",
+  // Settings icons
+  target: "target",
+  "clock.fill": "clock-outline",
+  "bell.badge.fill": "bell-badge",
+  "format-page-split": "format-page-split",
+  toaster: "toaster",
+  wallet: "wallet",
+  // Privacy icons
+  "eye.slash": "eye-off",
+  "lock.open": "lock-open",
+  "lock.fill": "lock",
+  // Numpad icon
+  dialpad: "dialpad",
 } as const)
 
 /**

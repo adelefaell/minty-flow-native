@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native-unistyles"
 
 import { ActionItem } from "~/components/action-item"
 import type { IconSymbolName } from "~/components/ui/icon-symbol"
+import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
 interface PreferenceItem {
@@ -14,7 +15,7 @@ interface PreferenceItem {
   icon: IconSymbolName
 }
 
-const preferenceItems: PreferenceItem[] = [
+const appearanceItems: PreferenceItem[] = [
   {
     id: "theme",
     title: "Theme",
@@ -23,11 +24,56 @@ const preferenceItems: PreferenceItem[] = [
     icon: "paintbrush.fill",
   },
   {
+    id: "numpad",
+    title: "Numpad",
+    description: "Configure numpad layout",
+    route: "/(settings)/(preferences)/numpad",
+    icon: "dialpad",
+  },
+  {
     id: "toast",
     title: "Toast Appearance",
     description: "Configure your preferred toast appearance",
     route: "/(settings)/(preferences)/toast-appearance",
+    icon: "toaster",
+  },
+]
+
+const otherPreferenceItems: PreferenceItem[] = [
+  {
+    id: "privacy",
+    title: "Privacy",
+    description: "Manage privacy and security settings",
+    route: "/(settings)/(preferences)/privacy",
+    icon: "lock.fill",
+  },
+  {
+    id: "exchange-rates",
+    title: "Exchange Rates",
+    description: "Configure your preferred exchange rates",
+    route: "/(settings)/(preferences)/exchange-rates",
+    icon: "wallet",
+  },
+  {
+    id: "trash-bin",
+    title: "Trash bin",
+    description: "Manage deleted items and retention period",
+    route: "/(settings)/(preferences)/trash-bin",
+    icon: "trash",
+  },
+  {
+    id: "reminder",
+    title: "Reminder",
+    description: "Set up daily reminders for expense tracking",
+    route: "/(settings)/(preferences)/reminder",
     icon: "bell.fill",
+  },
+  {
+    id: "pending-transactions",
+    title: "Pending transactions",
+    description: "Configure pending transaction settings",
+    route: "/(settings)/(preferences)/pending-transactions",
+    icon: "clock.fill",
   },
 ]
 
@@ -36,17 +82,37 @@ export default function PreferencesScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View native style={styles.itemsList}>
-        {preferenceItems.map((item, index) => (
-          <ActionItem
-            index={index}
-            key={item.id}
-            icon={item.icon}
-            title={item.title}
-            // description={item.description}
-            onPress={() => router.push(item.route)}
-          />
-        ))}
+      {/* Other Preferences */}
+      <View style={styles.section}>
+        <View style={styles.itemsList}>
+          {otherPreferenceItems.map((item) => (
+            <ActionItem
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              // description={item.description}
+              onPress={() => router.push(item.route)}
+            />
+          ))}
+        </View>
+      </View>
+
+      {/* Appearance Section */}
+      <View style={styles.section}>
+        <Text variant="h4" style={styles.sectionTitle}>
+          Appearance
+        </Text>
+        <View style={styles.itemsList}>
+          {appearanceItems.map((item) => (
+            <ActionItem
+              key={item.id}
+              icon={item.icon}
+              title={item.title}
+              // description={item.description}
+              onPress={() => router.push(item.route)}
+            />
+          ))}
+        </View>
       </View>
     </ScrollView>
   )
@@ -59,6 +125,14 @@ const styles = StyleSheet.create((theme) => ({
   },
   content: {
     paddingBottom: 40,
+  },
+  section: {
+    marginBlock: 10,
+  },
+  sectionTitle: {
+    fontWeight: "bold",
+    color: theme.colors.onSurface,
+    paddingHorizontal: 20,
   },
   itemsList: {
     gap: 0,

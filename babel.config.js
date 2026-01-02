@@ -11,6 +11,7 @@ module.exports = (api) => {
     // other config
     plugins: [
       // other plugins
+      "react-native-worklets/plugin",
       [
         "react-native-unistyles/plugin",
         {

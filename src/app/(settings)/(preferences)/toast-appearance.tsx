@@ -1,11 +1,4 @@
-import { useRef } from "react"
 import { Alert, ScrollView } from "react-native"
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated"
 import { StyleSheet } from "react-native-unistyles"
 
 import { Button } from "~/components/ui/button"
@@ -27,42 +20,6 @@ export default function ToastAppearanceScreen() {
     setShowCloseIcon,
     resetToDefaults,
   } = useToastAppearanceStore()
-
-  // Animation values for fade-in effects
-  const section1Opacity = useSharedValue(0)
-  const section1TranslateY = useSharedValue(10)
-  const section2Opacity = useSharedValue(0)
-  const section2TranslateY = useSharedValue(10)
-  const section3Opacity = useSharedValue(0)
-  const section3TranslateY = useSharedValue(10)
-  const hasAnimated = useRef(false)
-
-  // Start animations with staggered delays (only once)
-  if (!hasAnimated.current) {
-    section1Opacity.value = withDelay(0, withTiming(1, { duration: 300 }))
-    section1TranslateY.value = withDelay(0, withTiming(0, { duration: 300 }))
-    section2Opacity.value = withDelay(150, withTiming(1, { duration: 300 }))
-    section2TranslateY.value = withDelay(150, withTiming(0, { duration: 300 }))
-    section3Opacity.value = withDelay(300, withTiming(1, { duration: 300 }))
-    section3TranslateY.value = withDelay(300, withTiming(0, { duration: 300 }))
-    hasAnimated.current = true
-  }
-
-  // Animated styles for each section
-  const section1Style = useAnimatedStyle(() => ({
-    opacity: section1Opacity.value,
-    transform: [{ translateY: section1TranslateY.value }],
-  }))
-
-  const section2Style = useAnimatedStyle(() => ({
-    opacity: section2Opacity.value,
-    transform: [{ translateY: section2TranslateY.value }],
-  }))
-
-  const section3Style = useAnimatedStyle(() => ({
-    opacity: section3Opacity.value,
-    transform: [{ translateY: section3TranslateY.value }],
-  }))
 
   const handlePositionChange = (newPosition: ToastPosition) => {
     setPosition(newPosition)
@@ -117,147 +74,138 @@ export default function ToastAppearanceScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Animated.View style={section1Style}>
-        <View native style={styles.section}>
-          {/* Position */}
-          <View native style={styles.settingRow}>
-            <View native style={styles.settingInfo}>
-              <Text variant="p" style={styles.settingLabel}>
-                Position
-              </Text>
-              <Text variant="small" style={styles.settingDescription}>
-                Where toasts appear on screen
-              </Text>
-              <View native style={styles.radioGroup}>
-                <Pressable
-                  style={styles.radioOption}
-                  onPress={() => handlePositionChange("top")}
+      <View native style={styles.section}>
+        {/* Position */}
+        <View native style={styles.settingRow}>
+          <View native style={styles.settingInfo}>
+            <Text variant="p" style={styles.settingLabel}>
+              Position
+            </Text>
+            <Text variant="small" style={styles.settingDescription}>
+              Where toasts appear on screen
+            </Text>
+            <View native style={styles.radioGroup}>
+              <Pressable
+                style={styles.radioOption}
+                onPress={() => handlePositionChange("top")}
+              >
+                <View
+                  native
+                  style={[
+                    styles.radioButton,
+                    position === "top" && styles.radioButtonSelected,
+                  ]}
                 >
-                  <View
-                    native
-                    style={[
-                      styles.radioButton,
-                      position === "top" && styles.radioButtonSelected,
-                    ]}
-                  >
-                    {position === "top" && (
-                      <View native style={styles.radioButtonInner} />
-                    )}
-                  </View>
-                  <Text
-                    style={[
-                      styles.radioLabel,
-                      position === "top" && styles.radioLabelSelected,
-                    ]}
-                  >
-                    Top
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={styles.radioOption}
-                  onPress={() => handlePositionChange("bottom")}
+                  {position === "top" && (
+                    <View native style={styles.radioButtonInner} />
+                  )}
+                </View>
+                <Text
+                  style={[
+                    styles.radioLabel,
+                    position === "top" && styles.radioLabelSelected,
+                  ]}
                 >
-                  <View
-                    native
-                    style={[
-                      styles.radioButton,
-                      position === "bottom" && styles.radioButtonSelected,
-                    ]}
-                  >
-                    {position === "bottom" && (
-                      <View native style={styles.radioButtonInner} />
-                    )}
-                  </View>
-                  <Text
-                    style={[
-                      styles.radioLabel,
-                      position === "bottom" && styles.radioLabelSelected,
-                    ]}
-                  >
-                    Bottom
-                  </Text>
-                </Pressable>
-              </View>
+                  Top
+                </Text>
+              </Pressable>
+              <Pressable
+                style={styles.radioOption}
+                onPress={() => handlePositionChange("bottom")}
+              >
+                <View
+                  native
+                  style={[
+                    styles.radioButton,
+                    position === "bottom" && styles.radioButtonSelected,
+                  ]}
+                >
+                  {position === "bottom" && (
+                    <View native style={styles.radioButtonInner} />
+                  )}
+                </View>
+                <Text
+                  style={[
+                    styles.radioLabel,
+                    position === "bottom" && styles.radioLabelSelected,
+                  ]}
+                >
+                  Bottom
+                </Text>
+              </Pressable>
             </View>
           </View>
-
-          {/* Progress Bar */}
-          <Pressable
-            style={styles.settingRow}
-            onPress={() => setShowProgressBar(!showProgressBar)}
-          >
-            <View native style={styles.settingInfo}>
-              <Text variant="p" style={styles.settingLabel}>
-                Progress Bar
-              </Text>
-              <Text variant="small" style={styles.settingDescription}>
-                Visual countdown indicator
-              </Text>
-            </View>
-            <Switch
-              value={showProgressBar}
-              onValueChange={setShowProgressBar}
-            />
-          </Pressable>
-
-          {/* Close Icon */}
-          <Pressable
-            style={styles.settingRow}
-            onPress={() => setShowCloseIcon(!showCloseIcon)}
-          >
-            <View native style={styles.settingInfo}>
-              <Text variant="p" style={styles.settingLabel}>
-                Close Icon
-              </Text>
-              <Text variant="small" style={styles.settingDescription}>
-                Manual dismiss button
-              </Text>
-            </View>
-            <Switch value={showCloseIcon} onValueChange={setShowCloseIcon} />
-          </Pressable>
         </View>
-      </Animated.View>
+
+        {/* Progress Bar */}
+        <Pressable
+          style={styles.settingRow}
+          onPress={() => setShowProgressBar(!showProgressBar)}
+        >
+          <View native style={styles.settingInfo}>
+            <Text variant="p" style={styles.settingLabel}>
+              Progress Bar
+            </Text>
+            <Text variant="small" style={styles.settingDescription}>
+              Visual countdown indicator
+            </Text>
+          </View>
+          <Switch value={showProgressBar} onValueChange={setShowProgressBar} />
+        </Pressable>
+
+        {/* Close Icon */}
+        <Pressable
+          style={styles.settingRow}
+          onPress={() => setShowCloseIcon(!showCloseIcon)}
+        >
+          <View native style={styles.settingInfo}>
+            <Text variant="p" style={styles.settingLabel}>
+              Close Icon
+            </Text>
+            <Text variant="small" style={styles.settingDescription}>
+              Manual dismiss button
+            </Text>
+          </View>
+          <Switch value={showCloseIcon} onValueChange={setShowCloseIcon} />
+        </Pressable>
+      </View>
 
       {/* Demo Section */}
-      <Animated.View style={section2Style}>
-        <View native style={styles.demoSection}>
-          <Text variant="h3" style={styles.sectionTitle}>
-            Preview
-          </Text>
-          <Text variant="small" style={styles.demoDescription}>
-            Test your toast settings with demo notifications
-          </Text>
-          <View native style={styles.demoButtons}>
-            <Button
-              variant="default"
-              style={styles.demoButton}
-              onPress={handleShowDemoToasts}
-            >
-              <Text style={styles.demoButtonText}>Show Demo Toasts</Text>
-            </Button>
-            <Button
-              variant="outline"
-              style={styles.demoButton}
-              onPress={() => Toast.hideAll()}
-            >
-              <Text style={styles.hideAllButtonText}>Hide All</Text>
-            </Button>
-          </View>
-        </View>
-      </Animated.View>
-
-      {/* Reset Section */}
-      <Animated.View style={section3Style}>
-        <View native style={styles.resetSection}>
+      <View native style={styles.demoSection}>
+        <Text variant="h3" style={styles.sectionTitle}>
+          Preview
+        </Text>
+        <Text variant="small" style={styles.demoDescription}>
+          Test your toast settings with demo notifications
+        </Text>
+        <View native style={styles.demoButtons}>
           <Button
-            variant="destructive"
-            style={styles.resetButton}
-            onPress={handleResetToDefaults}
+            variant="default"
+            style={styles.demoButton}
+            onPress={handleShowDemoToasts}
           >
-            <Text>Reset to Defaults</Text>
+            <Text style={styles.demoButtonText}>Show Demo Toasts</Text>
+          </Button>
+          <Button
+            variant="outline"
+            style={styles.demoButton}
+            onPress={() => Toast.hideAll()}
+          >
+            <Text style={styles.hideAllButtonText}>Hide All</Text>
           </Button>
         </View>
-      </Animated.View>
+      </View>
+
+      {/* Reset Section */}
+      <View native style={styles.resetSection}>
+        <Button
+          variant="destructive"
+          style={styles.resetButton}
+          onPress={handleResetToDefaults}
+        >
+          <Text>Reset to Defaults</Text>
+        </Button>
+      </View>
     </ScrollView>
   )
 }

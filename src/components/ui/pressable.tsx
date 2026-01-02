@@ -13,10 +13,11 @@ export const Pressable = ({ native, style, ...props }: PressableProps) => {
 
   return (
     <RNPressable
-      style={(state) => [
-        typeof style === "function" ? style(state) : style,
-        pressableStyles.base,
-      ]}
+      style={
+        typeof style === "function"
+          ? (state) => [style(state), pressableStyles.base]
+          : [style, pressableStyles.base]
+      }
       android_ripple={{
         color: pressableStyles.ripple.color,
         foreground: true, // <-- KEY TO MAKE IT SHOW

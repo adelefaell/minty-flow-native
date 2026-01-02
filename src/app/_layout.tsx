@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { useUnistyles } from "react-native-unistyles"
 import "react-native-reanimated"
 
-import { ToastManager } from "~/components/toast"
+import { ToastManager } from "~/components/ui/toast"
 
 export default function RootLayout() {
   const { theme } = useUnistyles()
@@ -30,6 +30,8 @@ export default function RootLayout() {
             name="toast-demo"
             options={{ presentation: "modal", title: "Toast Demo" }}
           />
+
+          {/* settings screens */}
           <Stack.Screen
             name="(settings)/edit-profile"
             options={{ presentation: "modal", title: "Edit Profile" }}
@@ -55,6 +57,32 @@ export default function RootLayout() {
             options={{ presentation: "modal", title: "Preferences" }}
           />
           <Stack.Screen
+            name="(settings)/data-management"
+            options={{ presentation: "modal", title: "Data Management" }}
+          />
+          <Stack.Screen
+            name="(settings)/notifications"
+            options={{ presentation: "modal", title: "Notifications" }}
+          />
+          <Stack.Screen
+            name="(settings)/budgets"
+            options={{ presentation: "modal", title: "Budgets" }}
+          />
+          <Stack.Screen
+            name="(settings)/pending-transactions"
+            options={{ presentation: "modal", title: "Pending Transactions" }}
+          />
+          <Stack.Screen
+            name="(settings)/bill-splitter"
+            options={{ presentation: "modal", title: "Bill Splitter" }}
+          />
+          <Stack.Screen
+            name="(settings)/goals"
+            options={{ presentation: "modal", title: "Goals" }}
+          />
+
+          {/* settings screens (preferences) */}
+          <Stack.Screen
             name="(settings)/(preferences)/theme"
             options={{ presentation: "modal", title: "Theme" }}
           />
@@ -63,12 +91,33 @@ export default function RootLayout() {
             options={{ presentation: "modal", title: "Toast Appearance" }}
           />
           <Stack.Screen
-            name="(settings)/data-management"
-            options={{ presentation: "modal", title: "Data Management" }}
+            name="(settings)/(preferences)/exchange-rates"
+            options={{ presentation: "modal", title: "Exchange Rates" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/trash-bin"
+            options={{ presentation: "modal", title: "Trash bin" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/reminder"
+            options={{ presentation: "modal", title: "Reminder" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/numpad"
+            options={{ presentation: "modal", title: "Numpad" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/pending-transactions"
+            options={{ presentation: "modal", title: "Pending transactions" }}
+          />
+          <Stack.Screen
+            name="(settings)/(preferences)/privacy"
+            options={{ presentation: "modal", title: "Privacy" }}
           />
         </Stack>
 
-        <StatusBar style={theme.isDark ? "light" : "dark"} />
+        <StatusBar style={theme.isDark ? "light" : "dark"} animated />
+
         <ToastManager />
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

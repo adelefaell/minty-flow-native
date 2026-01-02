@@ -1,10 +1,8 @@
 import { useState } from "react"
 import { ScrollView } from "react-native"
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
-import { SpringButton } from "~/components/spring-button"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -190,10 +188,7 @@ export default function ThemeSettingsScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* Compact Header with Current Theme */}
-      <Animated.View
-        entering={FadeIn.delay(50).duration(400)}
-        style={styles.header}
-      >
+      <View style={styles.header}>
         <Text style={styles.headerLabel}>Current theme</Text>
         <Text style={styles.headerTheme}>
           {(() => {
@@ -210,7 +205,7 @@ export default function ThemeSettingsScreen() {
             return "Select a theme"
           })()}
         </Text>
-      </Animated.View>
+      </View>
 
       {/* Segmented Control for Categories */}
       <View style={styles.segmentedControl}>
@@ -256,14 +251,11 @@ export default function ThemeSettingsScreen() {
       </View>
 
       {/* Compact Color Grid */}
-      <Animated.View
-        style={styles.colorGrid}
-        entering={FadeInDown.delay(150).duration(400)}
-      >
+      <View style={styles.colorGrid}>
         {categoryThemes.map((scheme) => {
           const isSelected = themeMode === scheme.name
           return (
-            <SpringButton
+            <Pressable
               key={scheme.name}
               style={[
                 styles.colorOption,
@@ -278,23 +270,20 @@ export default function ThemeSettingsScreen() {
                 ]}
               />
               {isSelected && <View style={styles.checkmark} />}
-            </SpringButton>
+            </Pressable>
           )
         })}
-      </Animated.View>
+      </View>
 
       {/* Standalone Themes */}
       {Object.keys(STANDALONE_THEMES).length > 0 && (
-        <Animated.View
-          entering={FadeInDown.delay(150).duration(400)}
-          style={styles.standaloneSection}
-        >
+        <View style={styles.standaloneSection}>
           <Text style={styles.sectionTitle}>Other</Text>
           <View style={styles.colorGrid}>
             {Object.values(STANDALONE_THEMES).map((scheme) => {
               const isSelected = themeMode === scheme.name
               return (
-                <SpringButton
+                <Pressable
                   key={scheme.name}
                   style={[
                     styles.colorOption,
@@ -309,11 +298,11 @@ export default function ThemeSettingsScreen() {
                     ]}
                   />
                   {isSelected && <View style={styles.checkmark} />}
-                </SpringButton>
+                </Pressable>
               )
             })}
           </View>
-        </Animated.View>
+        </View>
       )}
     </ScrollView>
   )

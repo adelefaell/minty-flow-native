@@ -1,10 +1,3 @@
-import { useRef } from "react"
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withTiming,
-} from "react-native-reanimated"
 import { StyleSheet } from "react-native-unistyles"
 
 import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
@@ -18,7 +11,6 @@ interface ActionItemProps {
   description?: string
   onPress: () => void
   soon?: boolean
-  index?: number
 }
 
 export const ActionItem = ({
@@ -27,60 +19,40 @@ export const ActionItem = ({
   description,
   onPress,
   soon,
-  index = 0,
 }: ActionItemProps) => {
-  const delay = index * 100 // Stagger delay: 0ms, 100ms, 200ms, etc.
-  const opacity = useSharedValue(0)
-  const translateY = useSharedValue(10)
-  const hasAnimated = useRef(false)
-
-  // Start animation with delay using reanimated (only once)
-  if (!hasAnimated.current) {
-    opacity.value = withDelay(delay, withTiming(1, { duration: 300 }))
-    translateY.value = withDelay(delay, withTiming(0, { duration: 300 }))
-    hasAnimated.current = true
-  }
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
-  }))
-
   return (
-    <Animated.View style={animatedStyle}>
-      <Pressable
-        style={(state) => [
-          styles.actionItem,
-          state.pressed && styles.actionItemPressed,
-          soon && { opacity: 0.5 },
-        ]}
-        onPress={onPress}
-      >
-        <View style={styles.actionItemLeft}>
-          <View style={styles.iconContainer}>
-            <IconSymbol name={icon} size={24} />
-          </View>
-          <View style={styles.actionItemContent}>
-            <View style={styles.titleRow}>
-              <Text variant="default" style={styles.actionItemTitle}>
-                {title}
-              </Text>
-              {soon && (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>SOON</Text>
-                </View>
-              )}
-            </View>
-            {description && (
-              <Text variant="small" style={styles.actionItemDescription}>
-                {description}
-              </Text>
+    <Pressable
+      style={(state) => [
+        styles.actionItem,
+        state.pressed && styles.actionItemPressed,
+        soon && { opacity: 0.5 },
+      ]}
+      onPress={onPress}
+    >
+      <View style={styles.actionItemLeft}>
+        <View style={styles.iconContainer}>
+          <IconSymbol name={icon} size={24} />
+        </View>
+        <View style={styles.actionItemContent}>
+          <View style={styles.titleRow}>
+            <Text variant="default" style={styles.actionItemTitle}>
+              {title}
+            </Text>
+            {soon && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>SOON</Text>
+              </View>
             )}
           </View>
+          {description && (
+            <Text variant="small" style={styles.actionItemDescription}>
+              {description}
+            </Text>
+          )}
         </View>
-        <IconSymbol name="chevron.right" size={18} />
-      </Pressable>
-    </Animated.View>
+      </View>
+      <IconSymbol name="chevron.right" size={18} />
+    </Pressable>
   )
 }
 

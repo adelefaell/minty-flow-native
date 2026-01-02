@@ -1,4 +1,3 @@
-import * as React from "react"
 import { View as RNView, type ViewProps as RNViewProps } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
@@ -11,13 +10,6 @@ type ViewVariant =
   | "elevated"
   | "section"
 
-// Context for passing view variant to child Text components
-const ViewTextContext = React.createContext<{
-  variant?: ViewVariant
-}>({})
-
-export const useViewTextContext = () => React.useContext(ViewTextContext)
-
 export interface ViewProps extends RNViewProps {
   variant?: ViewVariant
   native?: boolean
@@ -29,15 +21,9 @@ export const View = ({
   native,
   ...props
 }: ViewProps) => {
-  const contextValue = React.useMemo(() => ({ variant }), [variant])
-
   if (native) return <RNView style={style} {...props} />
 
-  return (
-    <ViewTextContext.Provider value={contextValue}>
-      <RNView style={[viewStyles[variant], style]} {...props} />
-    </ViewTextContext.Provider>
-  )
+  return <RNView style={[viewStyles[variant], style]} {...props} />
 }
 
 const viewStyles = StyleSheet.create((theme) => ({

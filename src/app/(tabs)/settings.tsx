@@ -45,6 +45,34 @@ const moneyManagementItems: SettingsItem[] = [
     route: "/(settings)/trash",
     icon: "trash",
   },
+  {
+    id: "goals",
+    title: "Goals",
+    description: "Set and track your financial goals",
+    route: "/(settings)/goals",
+    icon: "target",
+  },
+  {
+    id: "budgets",
+    title: "Budgets",
+    description: "Create and manage your budgets",
+    route: "/(settings)/budgets",
+    icon: "chart.bar.fill",
+  },
+  {
+    id: "pending-transactions",
+    title: "Pending Transactions",
+    description: "View and manage pending transactions",
+    route: "/(settings)/pending-transactions",
+    icon: "clock.fill",
+  },
+  {
+    id: "bill-splitter",
+    title: "Bill Splitter",
+    description: "Split bills with friends and family",
+    route: "/(settings)/bill-splitter",
+    icon: "format-page-split",
+  },
 ]
 
 const otherSettingsItems: SettingsItem[] = [
@@ -61,6 +89,13 @@ const otherSettingsItems: SettingsItem[] = [
     description: "Backup, import, and export your data",
     route: "/(settings)/data-management",
     icon: "server.rack",
+  },
+  {
+    id: "notifications",
+    title: "Notifications",
+    description: "Manage your notification preferences",
+    route: "/(settings)/notifications",
+    icon: "bell.badge.fill",
   },
 ]
 
@@ -81,10 +116,7 @@ export default function SettingsScreen() {
 
       {/* Money Management Section */}
       <View style={styles.section}>
-        <Text variant="small" style={styles.sectionTitle}>
-          MONEY MANAGEMENT
-        </Text>
-        <View style={styles.sectionContent}>
+        <View>
           {moneyManagementItems.map((item) => (
             <ActionItem
               key={item.id}
@@ -100,15 +132,15 @@ export default function SettingsScreen() {
       {/* Other Settings Section */}
       <View style={styles.section}>
         <Text variant="small" style={styles.sectionTitle}>
-          OTHER SETTINGS
+          Other
         </Text>
-        <View style={styles.sectionContent}>
+        <View>
           {otherSettingsItems.map((item) => (
             <ActionItem
               key={item.id}
               icon={item.icon}
               title={item.title}
-              // description={item.description}
+              soon={item.id === "data-management"}
               onPress={() => router.push(item.route)}
             />
           ))}
@@ -148,9 +180,5 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.onSecondary,
     marginBottom: 12,
     paddingHorizontal: 20,
-  },
-  sectionContent: {
-    borderTopWidth: 1,
-    borderColor: theme.colors.onSurface,
   },
 }))
