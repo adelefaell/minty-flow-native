@@ -281,16 +281,16 @@ export function ToastManager() {
 
 const toastItemStyles = StyleSheet.create((theme) => ({
   iconSuccess: {
-    color: theme.customColors.success,
+    color: theme.colors.customColors.success,
   },
   iconError: {
     color: theme.colors.error,
   },
   iconWarn: {
-    color: theme.customColors.warning,
+    color: theme.colors.customColors.warning,
   },
   iconInfo: {
-    color: theme.customColors.info,
+    color: theme.colors.customColors.info,
   },
   iconDefault: {
     color: theme.colors.onSurface,
@@ -299,16 +299,16 @@ const toastItemStyles = StyleSheet.create((theme) => ({
     color: theme.colors.onSurface,
   },
   progressBarSuccess: {
-    backgroundColor: theme.customColors.success,
+    backgroundColor: theme.colors.customColors.success,
   },
   progressBarError: {
     backgroundColor: theme.colors.error,
   },
   progressBarWarn: {
-    backgroundColor: theme.customColors.warning,
+    backgroundColor: theme.colors.customColors.warning,
   },
   progressBarInfo: {
-    backgroundColor: theme.customColors.info,
+    backgroundColor: theme.colors.customColors.info,
   },
   progressBarDefault: {
     backgroundColor: theme.colors.primary,
@@ -363,7 +363,7 @@ const toastStyles = StyleSheet.create((theme) => ({
   container: {
     width: "100%",
     maxWidth: 400,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
@@ -414,13 +414,13 @@ const toastStyles = StyleSheet.create((theme) => ({
     right: 0,
     height: 4,
     backgroundColor: "rgba(0,0,0,0.1)",
-    borderBottomLeftRadius: theme.radius,
-    borderBottomRightRadius: theme.radius,
+    borderBottomLeftRadius: theme.colors.radius,
+    borderBottomRightRadius: theme.colors.radius,
     overflow: "hidden",
   },
   progressBar: {
     height: "100%",
-    borderBottomLeftRadius: theme.radius,
-    borderBottomRightRadius: theme.radius,
+    borderBottomLeftRadius: theme.colors.radius,
+    borderBottomRightRadius: theme.colors.radius,
   },
 }))

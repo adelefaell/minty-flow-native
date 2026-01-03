@@ -48,7 +48,7 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: theme.colors.secondary,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
   },
   placeholderText: {
     fontSize: 14,

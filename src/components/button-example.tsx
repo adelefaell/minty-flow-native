@@ -78,11 +78,11 @@ const styles = StyleSheet.create((t) => ({
     padding: 16,
     gap: 12,
     paddingBottom: 200,
-    borderRadius: t.radius,
+    borderRadius: t.colors.radius,
     overflow: "hidden",
   },
   buttonContainer: {
-    borderRadius: t.radius,
+    borderRadius: t.colors.radius,
     overflow: "hidden",
   },
 }))

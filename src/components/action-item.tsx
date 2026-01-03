@@ -102,7 +102,7 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.secondary,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
   },
   badgeText: {
     fontSize: 10,

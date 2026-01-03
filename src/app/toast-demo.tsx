@@ -323,8 +323,8 @@ const styles = StyleSheet.create((theme) => ({
   toggleButton: {
     paddingHorizontal: 24,
     paddingVertical: 8,
-    borderRadius: theme.radius,
-    backgroundColor: theme.customColors.info,
+    borderRadius: theme.colors.radius,
+    backgroundColor: theme.colors.customColors.info,
   },
   toggleButtonText: {
     fontWeight: "bold",
@@ -335,13 +335,13 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.onPrimary,
   },
   successButton: {
-    backgroundColor: theme.customColors.success,
+    backgroundColor: theme.colors.customColors.success,
   },
   infoButton: {
-    backgroundColor: theme.customColors.info,
+    backgroundColor: theme.colors.customColors.info,
   },
   warningButton: {
-    backgroundColor: theme.customColors.warning,
+    backgroundColor: theme.colors.customColors.warning,
   },
   errorButton: {
     backgroundColor: theme.colors.error,

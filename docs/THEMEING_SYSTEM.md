@@ -395,7 +395,7 @@ interface CustomColors {
 // In your theme context
 const useFlowColors = () => {
   const theme = useTheme();
-  return theme.customColors;
+  return theme.colors.customColors;
 };
 ```
 

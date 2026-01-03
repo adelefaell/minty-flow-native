@@ -272,8 +272,3 @@ export const catppuccinMochaSchemes: MintyColorScheme[] = [
     primary: "#b4befe",
   }),
 ]
-
-// Legacy exports for backward compatibility
-export const catppuccinFrappe = catppuccinFrappeSchemes[2] // Mauve (original)
-export const catppuccinMacchiato = catppuccinMacchiatoSchemes[2] // Mauve (original)
-export const catppuccinMocha = catppuccinMochaSchemes[2] // Mauve (original)

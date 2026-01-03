@@ -451,7 +451,7 @@ const calculatorStyles = StyleSheet.create((theme) => ({
   keypadButton: {
     flex: 1,
     aspectRatio: 1,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     backgroundColor: theme.colors.secondary,
     justifyContent: "center",
     alignItems: "center",

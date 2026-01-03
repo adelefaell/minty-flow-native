@@ -55,9 +55,11 @@ export class ThemeFactory {
       onSurface: this.mintyColorScheme.onSurface,
       error: this.mintyColorScheme.error || "#FF4040",
       onError: this.mintyColorScheme.onError || "#ffffff",
+      customColors: this.mintyColorScheme.customColors,
       rippleColor,
       shadow,
       boxShadow,
+      radius: this.mintyColorScheme.radius || 10,
     }
   }
 
@@ -95,9 +97,7 @@ export class ThemeFactory {
   buildTheme(): UnistylesTheme {
     return {
       colors: this.colors,
-      customColors: this.customColors,
       isDark: this.isDark,
-      radius: this.mintyColorScheme.radius || 10,
     }
   }
 }

@@ -64,7 +64,7 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     gap: 8,
     flexShrink: 1,
     _web: {
@@ -163,14 +163,14 @@ const sizeStyles = StyleSheet.create((theme) => ({
     height: 36,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     gap: 6,
   },
   lg: {
     height: 44,
     paddingHorizontal: 24,
     paddingVertical: 10,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
   },
   icon: {
     height: 40,

@@ -126,7 +126,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   previewSection: {
     backgroundColor: theme.colors.secondary,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     padding: 20,
     marginBottom: 24,
     alignItems: "center",
@@ -172,7 +172,7 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     padding: 16,
     backgroundColor: theme.colors.secondary,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     gap: 12,
   },
   radioButton: {

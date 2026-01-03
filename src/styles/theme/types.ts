@@ -52,21 +52,6 @@ export interface ThemeGroup {
  * This is the structure that Unistyles expects
  */
 export interface UnistylesTheme {
-  colors: Pick<
-    MintyColorScheme,
-    | "primary"
-    | "onPrimary"
-    | "secondary"
-    | "onSecondary"
-    | "surface"
-    | "onSurface"
-    | "error"
-    | "onError"
-    | "rippleColor"
-    | "shadow"
-    | "boxShadow"
-  >
-  customColors: MintyCustomColors
+  colors: Omit<MintyColorScheme, "name" | "iconName" | "isDark">
   isDark: boolean
-  radius: number
 }

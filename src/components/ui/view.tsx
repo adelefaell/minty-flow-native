@@ -32,7 +32,7 @@ const viewStyles = StyleSheet.create((theme) => ({
   },
   card: {
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     padding: 16,
     _web: {
       boxShadow: theme.colors.boxShadow,
@@ -55,7 +55,7 @@ const viewStyles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.onSurface,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
   },
   muted: {
     backgroundColor: theme.colors.secondary,

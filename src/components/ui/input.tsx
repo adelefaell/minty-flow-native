@@ -59,7 +59,7 @@ const styles = StyleSheet.create((theme) => ({
     height: 36,
     width: "100%",
     minWidth: 0,
-    borderRadius: theme.radius,
+    borderRadius: theme.colors.radius,
     borderWidth: 1,
     borderColor: theme.colors.onSurface,
     backgroundColor: theme.colors.surface,

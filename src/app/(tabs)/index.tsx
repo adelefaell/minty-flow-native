@@ -119,7 +119,7 @@ const styles = StyleSheet.create((t) => ({
     backgroundColor: t.colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: t.radius,
+    borderRadius: t.colors.radius,
     alignSelf: "center",
     marginVertical: 8,
   },
