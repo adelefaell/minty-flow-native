@@ -59,7 +59,7 @@ export const AccountCard = ({ account }: AccountCardProps) => {
           <View variant="muted" style={styles.summaryItem}>
             <View variant="muted" style={styles.summaryItemHeader}>
               <IconSymbol
-                name="arrow.up"
+                name="arrow.down"
                 size={12}
                 color={theme.colors.customColors.income}
               />
@@ -76,7 +76,7 @@ export const AccountCard = ({ account }: AccountCardProps) => {
           <View variant="muted" style={styles.summaryItem}>
             <View variant="muted" style={styles.summaryItemHeader}>
               <IconSymbol
-                name="arrow.down"
+                name="arrow.up"
                 size={12}
                 color={theme.colors.customColors.expense}
               />
