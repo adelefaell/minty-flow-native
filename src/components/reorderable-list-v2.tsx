@@ -6,16 +6,16 @@ import {
   Pressable,
 } from "react-native"
 import Animated, {
-  FadeIn,
-  FadeOut,
   LinearTransition,
+  SlideInRight,
+  SlideOutRight,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
 import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
-import { IconSymbol } from "~/components/ui/icon-symbol"
+import { Icon } from "~/components/icon"
 import { View } from "~/components/ui/view"
 import { logger } from "~/utils/logger"
 
@@ -114,10 +114,10 @@ function ReorderableRow<T>({
 
       {showButtons && (
         <AnimatedView
-          entering={FadeIn.duration(200)
+          entering={SlideInRight.duration(200)
             .springify()
             .delay(index * 30)}
-          exiting={FadeOut.duration(150)}
+          exiting={SlideOutRight.duration(150)}
           style={styles.buttonContainer}
         >
           <AnimatedPressable
@@ -129,7 +129,7 @@ function ReorderableRow<T>({
               isFirst && styles.buttonDisabled,
             ]}
           >
-            <IconSymbol name="arrow.up" size={18} color={iconColor} />
+            <Icon name="ArrowUp" size={18} color={iconColor} />
           </AnimatedPressable>
 
           <AnimatedPressable
@@ -141,7 +141,7 @@ function ReorderableRow<T>({
               isLast && styles.buttonDisabled,
             ]}
           >
-            <IconSymbol name="arrow.down" size={18} color={iconColor} />
+            <Icon name="ArrowDown" size={18} color={iconColor} />
           </AnimatedPressable>
         </AnimatedView>
       )}

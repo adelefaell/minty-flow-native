@@ -11,9 +11,9 @@ import Animated, {
 import { StyleSheet } from "react-native-unistyles"
 import { scheduleOnRN, scheduleOnUI } from "react-native-worklets"
 
+import { Icon, type IconName } from "~/components/icon"
 import { type Toast, useToastStore } from "~/stores/toast.store"
 
-import { IconSymbol, type IconSymbolName } from "./icon-symbol"
 import { Pressable } from "./pressable"
 import { Text } from "./text"
 import { View } from "./view"
@@ -86,18 +86,18 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
     }
   }
 
-  const getIconName = (): IconSymbolName => {
+  const getIconName = (): IconName => {
     switch (toast.type) {
       case "success":
-        return "checkmark.circle"
+        return "Check"
       case "error":
-        return "exclamationmark.triangle"
+        return "OctagonX"
       case "warn":
-        return "exclamationmark.triangle"
+        return "OctagonAlert"
       case "info":
-        return "info.circle"
+        return "Info"
       default:
-        return "bell.fill"
+        return "Bell"
     }
   }
 
@@ -197,7 +197,7 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
       onLayout={handleLayout}
     >
       <View native style={toastStyles.content}>
-        <IconSymbol
+        <Icon
           name={getIconName()}
           size={24}
           style={getIconColorStyle()}
@@ -215,8 +215,8 @@ function ToastItem({ toast, onHide }: ToastItemProps) {
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             style={toastStyles.closeButton}
           >
-            <IconSymbol
-              name="xmark"
+            <Icon
+              name="X"
               size={20}
               style={toastItemStyles.closeIcon}
               color={

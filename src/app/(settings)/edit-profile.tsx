@@ -6,8 +6,8 @@ import { Alert, ScrollView } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
+import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
-import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Input } from "~/components/ui/input"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
@@ -87,7 +87,7 @@ export default function EditProfileScreen() {
               )}
             </View>
             <View style={styles.cameraIconContainer}>
-              <IconSymbol name="camera.fill" size={20} />
+              <Icon name="Camera" size={20} />
             </View>
           </Pressable>
           {localImageUri && (

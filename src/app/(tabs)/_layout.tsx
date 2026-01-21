@@ -6,8 +6,8 @@ import PagerView, {
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
+import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
-import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Tooltip } from "~/components/ui/tooltip"
 import { View } from "~/components/ui/view"
 
@@ -105,7 +105,7 @@ const TabLayout = () => {
   }
 
   const isActiveTab = (index: number) =>
-    activePage === index ? { opacity: 1 } : { opacity: 0.5 }
+    activePage === index ? { opacity: 1 } : { opacity: 0.8 }
 
   return (
     <View style={styles.container}>
@@ -132,7 +132,7 @@ const TabLayout = () => {
               onPress={() => goTo(0)}
               style={styles.tabButton}
             >
-              <IconSymbol name="circle.line" style={isActiveTab(0)} />
+              <Icon name="Circle" style={isActiveTab(0)} />
             </Button>
           </Tooltip>
 
@@ -143,7 +143,7 @@ const TabLayout = () => {
               onPress={() => goTo(1)}
               style={styles.tabButton}
             >
-              <IconSymbol name="chart.bar.fill" style={isActiveTab(1)} />
+              <Icon name="BarChart3" style={isActiveTab(1)} />
             </Button>
           </Tooltip>
 
@@ -156,11 +156,10 @@ const TabLayout = () => {
               }
               style={styles.centerButton}
             >
-              <IconSymbol
-                name="plus"
+              <Icon
+                name="Plus"
                 size={28}
-                // color={theme.colors.onPrimary}
-                style={styles.centerButtonIcon}
+                color={styles.centerButtonIcon.color}
               />
             </Button>
           </Tooltip>
@@ -172,7 +171,7 @@ const TabLayout = () => {
               onPress={() => goTo(2)}
               style={styles.tabButton}
             >
-              <IconSymbol name="wallet.bifold.fill" style={isActiveTab(2)} />
+              <Icon name="Wallet" style={isActiveTab(2)} />
             </Button>
           </Tooltip>
 
@@ -183,7 +182,7 @@ const TabLayout = () => {
               onPress={() => goTo(3)}
               style={styles.tabButton}
             >
-              <IconSymbol name="gearshape.fill" style={isActiveTab(3)} />
+              <Icon name="Settings" style={isActiveTab(3)} />
             </Button>
           </Tooltip>
         </View>

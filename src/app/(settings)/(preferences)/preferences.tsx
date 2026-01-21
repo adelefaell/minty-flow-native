@@ -3,7 +3,7 @@ import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
 import { ActionItem } from "~/components/action-item"
-import type { IconSymbolName } from "~/components/ui/icon-symbol"
+import type { IconName } from "~/components/icon"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -12,7 +12,7 @@ interface PreferenceItem {
   title: string
   description?: string
   route: Href
-  icon: IconSymbolName
+  icon: IconName
 }
 
 const appearanceItems: PreferenceItem[] = [
@@ -21,28 +21,28 @@ const appearanceItems: PreferenceItem[] = [
     title: "Theme",
     description: "Choose your preferred theme",
     route: "/(settings)/(preferences)/theme",
-    icon: "paintbrush.fill",
+    icon: "Paintbrush",
   },
   {
     id: "money-formatting",
     title: "Money Formatting",
     description: "Configure how money is displayed",
     route: "/(settings)/(preferences)/money-formatting",
-    icon: "number",
+    icon: "Hash",
   },
   {
     id: "numpad",
     title: "Numpad",
     description: "Configure numpad layout",
     route: "/(settings)/(preferences)/numpad",
-    icon: "dialpad",
+    icon: "Smartphone",
   },
   {
     id: "toast",
     title: "Toast Style",
     description: "Configure your preferred toast style",
     route: "/(settings)/(preferences)/toast-style",
-    icon: "toaster",
+    icon: "GalleryVerticalEnd",
   },
 ]
 
@@ -52,42 +52,42 @@ const otherPreferenceItems: PreferenceItem[] = [
     title: "Privacy",
     description: "Manage privacy and security settings",
     route: "/(settings)/(preferences)/privacy",
-    icon: "lock.fill",
+    icon: "Lock",
   },
   {
     id: "transaction-location",
     title: "Transaction Location",
     description: "Configure transaction location settings",
     route: "/(settings)/(preferences)/transaction-location",
-    icon: "location.fill",
+    icon: "MapPin",
   },
   {
     id: "exchange-rates",
     title: "Exchange Rates",
     description: "Configure your preferred exchange rates",
     route: "/(settings)/(preferences)/exchange-rates",
-    icon: "wallet",
+    icon: "Coins",
   },
   {
     id: "trash-bin",
     title: "Trash bin",
     description: "Manage deleted items and retention period",
     route: "/(settings)/(preferences)/trash-bin",
-    icon: "trash",
+    icon: "Trash2",
   },
   {
     id: "reminder",
     title: "Reminder",
     description: "Set up daily reminders for expense tracking",
     route: "/(settings)/(preferences)/reminder",
-    icon: "bell.fill",
+    icon: "Bell",
   },
   {
     id: "pending-transactions",
     title: "Pending transactions",
     description: "Configure pending transaction settings",
     route: "/(settings)/(preferences)/pending-transactions",
-    icon: "clock.fill",
+    icon: "Clock",
   },
 ]
 

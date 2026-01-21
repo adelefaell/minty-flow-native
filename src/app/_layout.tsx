@@ -50,6 +50,10 @@ export default function RootLayout() {
               options={{ presentation: "modal", title: "Categories" }}
             />
             <Stack.Screen
+              name="(settings)/(categories)/presets"
+              options={{ presentation: "modal", title: "Add from Presets" }}
+            />
+            <Stack.Screen
               name="(settings)/(categories)/[categoryId]"
               options={({ route }) => {
                 const params = route.params as

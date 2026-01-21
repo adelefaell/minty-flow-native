@@ -36,7 +36,7 @@ export default function CategoriesIndexScreen() {
         {tabs.map((tab) => (
           <Button
             key={tab.type}
-            variant={activeTab === tab.type ? "default" : "ghost"}
+            variant={activeTab === tab.type ? "default" : "secondary"}
             size="sm"
             onPress={() => setActiveTab(tab.type)}
             style={styles.tab}

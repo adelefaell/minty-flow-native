@@ -6,8 +6,8 @@ import { StyleSheet } from "react-native-unistyles"
 import { ArchiveCategorySheet } from "~/components/archive-category-sheet"
 import { useBottomSheet } from "~/components/bottom-sheet"
 import { DeleteCategorySheet } from "~/components/delete-category-sheet"
+import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
-import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Input } from "~/components/ui/input"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
@@ -218,11 +218,7 @@ export default function EditCategoryScreen() {
               onPress={() => archiveSheet.present()}
               style={styles.actionButton}
             >
-              <IconSymbol
-                name="server.rack"
-                size={20}
-                style={styles.archiveIcon}
-              />
+              <Icon name="Server" size={20} style={styles.archiveIcon} />
               <Text variant="default" style={styles.archiveText}>
                 Archive Category
               </Text>
@@ -232,7 +228,7 @@ export default function EditCategoryScreen() {
               onPress={() => deleteSheet.present()}
               style={styles.actionButton}
             >
-              <IconSymbol name="trash" size={20} style={styles.deleteIcon} />
+              <Icon name="Trash2" size={20} style={styles.deleteIcon} />
               <Text variant="default" style={styles.deleteText}>
                 Delete Category
               </Text>

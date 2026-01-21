@@ -2,10 +2,10 @@ import { useState } from "react"
 import { StyleSheet } from "react-native-unistyles"
 
 import { AccountCard } from "~/components/account-card"
+import type { IconName } from "~/components/icon"
+import { Icon } from "~/components/icon"
 import { ReorderableListV2 } from "~/components/reorderable-list-v2"
 import { Button } from "~/components/ui/button"
-import type { IconSymbolName } from "~/components/ui/icon-symbol"
-import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -14,7 +14,7 @@ interface Account {
   id: string
   name: string
   type: string
-  icon: IconSymbolName
+  icon: IconName
   iconColor: string
   balance: number
   currency: string
@@ -29,7 +29,7 @@ const STATIC_ACCOUNTS: Account[] = [
     id: "1",
     name: "Test",
     type: "INVESTMENT",
-    icon: "wallet.bifold.fill",
+    icon: "Wallet",
     iconColor: "#FF9500", // Orange
     balance: 400.0,
     currency: "USD",
@@ -42,7 +42,7 @@ const STATIC_ACCOUNTS: Account[] = [
     id: "2",
     name: "Another Test",
     type: "CHECKING",
-    icon: "creditcard.fill",
+    icon: "CreditCard",
     iconColor: "#5E5CE6", // Purple
     balance: 120.0,
     currency: "EUR",
@@ -55,7 +55,7 @@ const STATIC_ACCOUNTS: Account[] = [
     id: "3",
     name: "Wallet",
     type: "CHECKING",
-    icon: "wallet",
+    icon: "Wallet",
     iconColor: "#FF2D55", // Pink
     balance: 100000.0,
     currency: "LBP",
@@ -111,10 +111,7 @@ export default function AccountsScreen() {
           size="icon"
           onPress={isReorderMode ? handleSaveReorder : handleToggleReorder}
         >
-          <IconSymbol
-            name={isReorderMode ? "checkmark" : "reorder.horizontal"}
-            size={24}
-          />
+          <Icon name={isReorderMode ? "Check" : "ArrowUpDown"} size={24} />
         </Button>
       </View>
 
@@ -158,7 +155,7 @@ export default function AccountsScreen() {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
           <Pressable style={styles.newAccountButton}>
-            <IconSymbol name="plus" size={24} />
+            <Icon name="Plus" size={24} />
             <Text variant="default" style={styles.newAccountText}>
               New Account
             </Text>

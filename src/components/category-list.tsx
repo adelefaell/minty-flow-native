@@ -3,9 +3,8 @@ import { useCallback, useState } from "react"
 import { FlatList } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
+import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
-import { IconSymbol } from "~/components/ui/icon-symbol"
-import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { logger } from "~/utils/logger"
@@ -21,7 +20,7 @@ interface CategoryListProps {
 }
 
 // Mock data - replace with actual data source
-const getMockCategories = (type: CategoryType): Category[] => {
+const getMockCategories = (_type: CategoryType): Category[] => {
   // Return empty array for now - will be populated from actual data source
   return []
 }
@@ -100,6 +99,15 @@ export function CategoryList({
     })
   }
 
+  const handleAddFromPresets = () => {
+    router.push({
+      pathname: "/(settings)/(categories)/presets",
+      params: {
+        type,
+      },
+    })
+  }
+
   const handleEditCategory = (id: string, updates: Partial<Category>) => {
     setCategories((prev) =>
       prev.map((cat) =>
@@ -116,27 +124,47 @@ export function CategoryList({
     (cat) => cat.type === type && !cat.isArchived,
   )
 
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <Button
+        variant="secondary"
+        size="default"
+        onPress={handleAddCategory}
+        style={styles.headerButton}
+      >
+        <Icon name="Plus" size={20} />
+        <Text variant="default" style={styles.headerButtonText}>
+          Add new category
+        </Text>
+      </Button>
+      <Button
+        variant="secondary"
+        size="default"
+        onPress={handleAddFromPresets}
+        style={styles.headerButton}
+      >
+        <Icon name="Shapes" size={20} />
+        <Text variant="default" style={styles.headerButtonText}>
+          Add from presets
+        </Text>
+      </Button>
+      <View style={styles.separator} />
+    </View>
+  )
+
   if (activeCategories.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <IconSymbol name="tag" size={40} style={styles.emptyIcon} />
-        <Text variant="h4" style={styles.emptyTitle}>
-          No {type} categories yet
-        </Text>
-        <Text variant="small" style={styles.emptyDescription}>
-          Create your first category to start organizing your transactions
-        </Text>
-        <Button
-          variant="default"
-          size="default"
-          onPress={handleAddCategory}
-          style={styles.emptyButton}
-        >
-          <IconSymbol name="plus" size={20} />
-          <Text variant="default" style={styles.emptyButtonText}>
-            Add Category
+      <View style={styles.emptyWrapper}>
+        {renderHeader()}
+        <View style={styles.emptyContainer}>
+          <Icon name="Tag" size={40} style={styles.emptyIcon} />
+          <Text variant="h4" style={styles.emptyTitle}>
+            No {type} categories yet
           </Text>
-        </Button>
+          <Text variant="small" style={styles.emptyDescription}>
+            Create your first category to start organizing your transactions
+          </Text>
+        </View>
       </View>
     )
   }
@@ -154,14 +182,7 @@ export function CategoryList({
         />
       )}
       contentContainerStyle={styles.listContent}
-      ListFooterComponent={
-        <Pressable style={styles.addButton} onPress={handleAddCategory}>
-          <IconSymbol name="plus" size={24} />
-          <Text variant="default" style={styles.addButtonText}>
-            Add Category
-          </Text>
-        </Pressable>
-      }
+      ListHeaderComponent={renderHeader()}
     />
   )
 }
@@ -172,6 +193,33 @@ const styles = StyleSheet.create((theme) => ({
     paddingTop: 8,
     paddingBottom: 100,
     gap: 8,
+  },
+  headerContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+    gap: 12,
+  },
+  headerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    width: "100%",
+  },
+  headerButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: theme.colors.onSurface,
+    opacity: 0.1,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  emptyWrapper: {
+    flex: 1,
   },
   emptyContainer: {
     flex: 1,
@@ -197,16 +245,6 @@ const styles = StyleSheet.create((theme) => ({
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 20,
-  },
-  emptyButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  emptyButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: theme.colors.onPrimary,
   },
   addButton: {
     flexDirection: "row",
