@@ -2,7 +2,7 @@ import type { NativeStackHeaderProps } from "@react-navigation/native-stack"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 
 import { Button } from "./ui/button"
 import { Text } from "./ui/text"
@@ -32,7 +32,7 @@ export const ScreenSharedHeader = ({
             }}
             // style={styles.backButton}
           >
-            <Icon name="ArrowLeft" size={24} />
+            <IconSymbol name="arrow-left" size={24} />
           </Button>
         </Tooltip>
       )}

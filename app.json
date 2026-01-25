@@ -41,7 +41,8 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "./plugins/withWatermelonDBJSI.js"
     ],
     "experiments": {
       "typedRoutes": true,

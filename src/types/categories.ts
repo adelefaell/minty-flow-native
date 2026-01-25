@@ -2,13 +2,15 @@
  * Category type definitions
  */
 
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
+
 export type CategoryType = "expense" | "income" | "transfer"
 
 export interface Category {
   id: string
   name: string
   type: CategoryType
-  icon?: string
+  icon?: IconSymbolName
   color?: {
     name: string
     bgClass?: string

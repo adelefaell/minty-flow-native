@@ -3,8 +3,8 @@ import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
 import { ActionItem } from "~/components/action-item"
-import type { IconName } from "~/components/icon"
 import { ProfileSection } from "~/components/profile-section"
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -13,7 +13,7 @@ interface SettingsItem {
   title: string
   description?: string
   route: Href
-  icon: IconName
+  icon: IconSymbolName
 }
 
 const moneyManagementItems: SettingsItem[] = [
@@ -22,56 +22,56 @@ const moneyManagementItems: SettingsItem[] = [
     title: "Loans",
     description: "Track money lent and borrowed",
     route: "/(settings)/loans",
-    icon: "BookText",
+    icon: "handshake-outline",
   },
   {
     id: "categories",
     title: "Categories",
     description: "Manage your transaction categories",
     route: "/(settings)/(categories)/categories",
-    icon: "Shapes",
+    icon: "shape-outline",
   },
   {
     id: "tags",
     title: "Tags",
     description: "Manage your transaction tags",
     route: "/(settings)/tags",
-    icon: "Tag",
+    icon: "tag-outline",
   },
   {
     id: "trash",
     title: "Trash",
     description: "View and restore deleted transactions",
     route: "/(settings)/trash",
-    icon: "Trash2",
+    icon: "trash-can-outline",
   },
   {
     id: "goals",
     title: "Goals",
     description: "Set and track your financial goals",
     route: "/(settings)/goals",
-    icon: "Target",
+    icon: "target",
   },
   {
     id: "budgets",
     title: "Budgets",
     description: "Create and manage your budgets",
     route: "/(settings)/budgets",
-    icon: "ChartPie",
+    icon: "chart-pie-outline",
   },
   {
     id: "pending-transactions",
     title: "Pending Transactions",
     description: "View and manage pending transactions",
     route: "/(settings)/pending-transactions",
-    icon: "Clock",
+    icon: "clock-outline",
   },
   {
     id: "bill-splitter",
     title: "Bill Splitter",
     description: "Split bills with friends and family",
     route: "/(settings)/bill-splitter",
-    icon: "Split",
+    icon: "format-page-split",
   },
 ]
 
@@ -81,21 +81,21 @@ const otherSettingsItems: SettingsItem[] = [
     title: "Preferences",
     description: "General preferences",
     route: "/(settings)/(preferences)/preferences",
-    icon: "Settings",
+    icon: "puzzle-edit",
   },
   {
     id: "data-management",
     title: "Data Management",
     description: "Backup, import, and export your data",
     route: "/(settings)/data-management",
-    icon: "Server",
+    icon: "server-outline",
   },
   {
     id: "notifications",
     title: "Notifications",
     description: "Manage your notification preferences",
     route: "/(settings)/notifications",
-    icon: "Bell",
+    icon: "bell-outline",
   },
 ]
 

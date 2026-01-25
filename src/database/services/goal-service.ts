@@ -1,0 +1,178 @@
+import { Q } from "@nozbe/watermelondb"
+
+import { database } from "../index"
+import type Goal from "../models/Goal"
+
+/**
+ * Goal Service
+ *
+ * Provides functions for managing goal data.
+ * Follows WatermelonDB CRUD pattern: https://watermelondb.dev/docs/CRUD
+ */
+
+/**
+ * Get the goals collection
+ */
+function getGoalCollection() {
+  return database.get<Goal>("goals")
+}
+
+/**
+ * Get all goals
+ */
+export async function getGoals(includeArchived = false): Promise<Goal[]> {
+  const goals = getGoalCollection()
+  if (includeArchived) {
+    return await goals.query().fetch()
+  }
+  return await goals.query(Q.where("is_archived", false)).fetch()
+}
+
+/**
+ * Find a goal by ID
+ */
+export async function findGoal(id: string): Promise<Goal | null> {
+  try {
+    return await getGoalCollection().find(id)
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Observe all goals reactively
+ */
+export function observeGoals(includeArchived = false) {
+  const goals = getGoalCollection()
+  if (includeArchived) {
+    return goals.query().observe()
+  }
+  return goals.query(Q.where("is_archived", false)).observe()
+}
+
+/**
+ * Observe a specific goal by ID
+ */
+export function observeGoalById(id: string) {
+  return getGoalCollection().findAndObserve(id)
+}
+
+/**
+ * Create a new goal
+ */
+export async function createGoal(data: {
+  name: string
+  description?: string
+  targetAmount: number
+  currentAmount?: number
+  currencyCode: string
+  targetDate?: Date
+  icon?: string
+  color?: string
+}): Promise<Goal> {
+  return await database.write(async () => {
+    return await getGoalCollection().create((goal) => {
+      goal.name = data.name
+      goal.description = data.description
+      goal.targetAmount = data.targetAmount
+      goal.currentAmount = data.currentAmount || 0
+      goal.currencyCode = data.currencyCode
+      goal.targetDate = data.targetDate
+      goal.icon = data.icon
+      goal.color = data.color
+      goal.isCompleted = false
+      goal.isArchived = false
+      goal.createdAt = new Date()
+      goal.updatedAt = new Date()
+    })
+  })
+}
+
+/**
+ * Update goal
+ */
+export async function updateGoal(
+  goal: Goal,
+  updates: Partial<{
+    name: string
+    description: string | undefined
+    targetAmount: number
+    currentAmount: number
+    targetDate: Date | undefined
+    icon: string | undefined
+    color: string | undefined
+    isCompleted: boolean
+    isArchived: boolean
+  }>,
+): Promise<Goal> {
+  return await database.write(async () => {
+    return await goal.update((g) => {
+      if (updates.name !== undefined) g.name = updates.name
+      if (updates.description !== undefined) g.description = updates.description
+      if (updates.targetAmount !== undefined)
+        g.targetAmount = updates.targetAmount
+      if (updates.currentAmount !== undefined)
+        g.currentAmount = updates.currentAmount
+      if (updates.targetDate !== undefined) g.targetDate = updates.targetDate
+      if (updates.icon !== undefined) g.icon = updates.icon
+      if (updates.color !== undefined) g.color = updates.color
+      if (updates.isCompleted !== undefined) g.isCompleted = updates.isCompleted
+      if (updates.isArchived !== undefined) g.isArchived = updates.isArchived
+      g.updatedAt = new Date()
+    })
+  })
+}
+
+/**
+ * Update goal by ID
+ */
+export async function updateGoalById(
+  id: string,
+  updates: Partial<{
+    name: string
+    description: string | undefined
+    targetAmount: number
+    currentAmount: number
+    targetDate: Date | undefined
+    icon: string | undefined
+    color: string | undefined
+    isCompleted: boolean
+    isArchived: boolean
+  }>,
+): Promise<Goal> {
+  const goal = await findGoal(id)
+  if (!goal) {
+    throw new Error(`Goal with id ${id} not found`)
+  }
+  return await updateGoal(goal, updates)
+}
+
+/**
+ * Add amount to goal
+ */
+export async function addToGoal(goal: Goal, amount: number): Promise<Goal> {
+  const newAmount = goal.currentAmount + amount
+  const isCompleted = newAmount >= goal.targetAmount
+  return await updateGoal(goal, {
+    currentAmount: newAmount,
+    isCompleted,
+  })
+}
+
+/**
+ * Delete goal (mark as deleted for sync)
+ */
+export async function deleteGoal(goal: Goal): Promise<void> {
+  await database.write(async () => {
+    await goal.markAsDeleted()
+  })
+}
+
+/**
+ * Permanently destroy goal
+ */
+export async function destroyGoal(goal: Goal): Promise<void> {
+  await database.write(async () => {
+    await goal.destroyPermanently()
+  })
+}

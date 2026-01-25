@@ -3,8 +3,8 @@ import { useCallback, useState } from "react"
 import { FlatList } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 import { logger } from "~/utils/logger"
@@ -132,9 +132,9 @@ export function CategoryList({
         onPress={handleAddCategory}
         style={styles.headerButton}
       >
-        <Icon name="Plus" size={20} />
+        <IconSymbol name="plus" size={20} />
         <Text variant="default" style={styles.headerButtonText}>
-          Add new category
+          Add New Category
         </Text>
       </Button>
       <Button
@@ -143,9 +143,9 @@ export function CategoryList({
         onPress={handleAddFromPresets}
         style={styles.headerButton}
       >
-        <Icon name="Shapes" size={20} />
+        <IconSymbol name="shape-plus-outline" size={20} />
         <Text variant="default" style={styles.headerButtonText}>
-          Add from presets
+          Add From Presets
         </Text>
       </Button>
       <View style={styles.separator} />
@@ -157,7 +157,7 @@ export function CategoryList({
       <View style={styles.emptyWrapper}>
         {renderHeader()}
         <View style={styles.emptyContainer}>
-          <Icon name="Tag" size={40} style={styles.emptyIcon} />
+          <IconSymbol name="tag-outline" size={40} style={styles.emptyIcon} />
           <Text variant="h4" style={styles.emptyTitle}>
             No {type} categories yet
           </Text>

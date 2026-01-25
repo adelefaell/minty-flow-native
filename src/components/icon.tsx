@@ -26,6 +26,7 @@ import {
   EyeOff,
   GalleryVerticalEnd,
   Hash,
+  Image,
   Info,
   Lock,
   MapPin,
@@ -54,7 +55,6 @@ import { useUnistyles } from "react-native-unistyles"
 import { logger } from "~/utils/logger"
 
 // Registry mapping icon names to their components
-// Mapped from Material Icons used in icon-symbol.tsx to Lucide equivalents
 const iconRegistry = {
   // Basic shapes and navigation
   Circle,
@@ -92,6 +92,7 @@ const iconRegistry = {
 
   // Media
   Camera,
+  Image,
 
   // UI elements
   Tag,
@@ -122,6 +123,9 @@ const iconRegistry = {
 
 // Type for valid icon names (automatically inferred from registry)
 export type IconName = keyof typeof iconRegistry
+
+// Export valid icon names array (derived from registry)
+export const VALID_ICON_NAMES = Object.keys(iconRegistry) as IconName[]
 
 interface IconProps {
   name: IconName

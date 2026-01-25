@@ -5,7 +5,15 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet"
 import type { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types"
-import { type ReactNode, useCallback, useMemo } from "react"
+import {
+  type ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+import { InteractionManager, Keyboard } from "react-native"
 import { StyleSheet as UnistylesSheet } from "react-native-unistyles"
 import { create } from "zustand"
 
@@ -16,7 +24,6 @@ const sheetStyles = UnistylesSheet.create((theme) => ({
   },
   contentContainer: {
     flex: 1,
-    padding: 16,
   },
   handleIndicator: {
     backgroundColor: theme.colors.onSurface,
@@ -119,12 +126,16 @@ export interface BottomSheetModalProps {
   backdropPressBehavior?: "none" | "close" | "collapse" | number
   /** Enable dynamic sizing */
   enableDynamicSizing?: boolean
+  /** Keyboard behavior: 'interactive' | 'fillParent' | 'extend' */
+  keyboardBehavior?: "interactive" | "fillParent" | "extend"
+  /** Keyboard blur behavior: 'none' | 'restore' */
+  keyboardBlurBehavior?: "none" | "restore"
 }
 
 export function BottomSheetModalComponent({
   id,
   children,
-  snapPoints = ["60%"],
+  snapPoints,
   onChange,
   onDismiss,
   enablePanDownToClose = true,
@@ -136,22 +147,96 @@ export function BottomSheetModalComponent({
   backdropEnableTouchThrough = false,
   backdropPressBehavior = "close",
   enableDynamicSizing = true,
+  keyboardBehavior = "extend",
+  keyboardBlurBehavior = "restore",
 }: BottomSheetModalProps) {
   const registerSheet = useBottomSheetStore((state) => state.registerSheet)
   const unregisterSheet = useBottomSheetStore((state) => state.unregisterSheet)
+  const snapToIndex = useBottomSheetStore((state) => state.snapToIndex)
 
-  // Use callback ref to register/unregister without useEffect
+  // Track if component is mounted and context is ready
+  const [isReady, setIsReady] = useState(false)
+
+  useLayoutEffect(() => {
+    // Use InteractionManager to ensure provider context is ready
+    // This runs after all interactions and animations are complete
+    let timer: number | null = null
+    const interaction = InteractionManager.runAfterInteractions(() => {
+      // Additional small delay to ensure BottomSheetModalProvider is fully initialized
+      timer = setTimeout(() => {
+        setIsReady(true)
+      }, 50) as unknown as number
+    })
+
+    return () => {
+      interaction.cancel()
+      if (timer !== null) {
+        clearTimeout(timer)
+      }
+    }
+  }, [])
+
+  // Use refs to store values for keyboard restore
+  const shouldRestoreRef = useRef(
+    keyboardBlurBehavior === "restore" && snapPoints && snapPoints.length > 0,
+  )
+  const sheetIdRef = useRef(id)
+  const wasKeyboardVisibleRef = useRef(false)
+
+  // Update refs when props change
+  shouldRestoreRef.current =
+    keyboardBlurBehavior === "restore" && snapPoints && snapPoints.length > 0
+  sheetIdRef.current = id
+
+  // Create a stable restore callback
+  const restoreSheet = useCallback(() => {
+    if (shouldRestoreRef.current) {
+      snapToIndex(sheetIdRef.current, 0)
+    }
+  }, [snapToIndex])
+
+  // Set up keyboard listeners using callback ref pattern (no useEffect)
+  const keyboardListenersRef = useRef<{
+    hide: ReturnType<typeof Keyboard.addListener> | null
+    show: ReturnType<typeof Keyboard.addListener> | null
+  }>({ hide: null, show: null })
+
+  // Use callback ref to register/unregister and manage keyboard listeners
   const bottomSheetModalRef = useCallback(
     (node: BottomSheetModalMethods | null) => {
       if (node) {
         // Register when ref is set
         registerSheet(id, { current: node })
+
+        // Set up keyboard listeners when sheet is mounted
+        keyboardListenersRef.current.hide = Keyboard.addListener(
+          "keyboardDidHide",
+          () => {
+            if (wasKeyboardVisibleRef.current && shouldRestoreRef.current) {
+              wasKeyboardVisibleRef.current = false
+              restoreSheet()
+            }
+          },
+        )
+
+        keyboardListenersRef.current.show = Keyboard.addListener(
+          "keyboardDidShow",
+          () => {
+            wasKeyboardVisibleRef.current = true
+          },
+        )
       } else {
         // Unregister when ref is cleared (component unmounting)
         unregisterSheet(id)
+
+        // Clean up keyboard listeners
+        keyboardListenersRef.current.hide?.remove()
+        keyboardListenersRef.current.show?.remove()
+        keyboardListenersRef.current.hide = null
+        keyboardListenersRef.current.show = null
       }
     },
-    [id, registerSheet, unregisterSheet],
+    [id, registerSheet, unregisterSheet, restoreSheet],
   )
 
   // Memoize snap points
@@ -192,6 +277,11 @@ export function BottomSheetModalComponent({
     ],
   )
 
+  // Don't render until context is ready to avoid context errors
+  if (!isReady) {
+    return null
+  }
+
   return (
     <BottomSheetModal
       ref={bottomSheetModalRef}
@@ -200,6 +290,8 @@ export function BottomSheetModalComponent({
       onChange={handleSheetChanges}
       onDismiss={onDismiss}
       enablePanDownToClose={enablePanDownToClose}
+      keyboardBehavior={keyboardBehavior}
+      keyboardBlurBehavior={keyboardBlurBehavior}
       backgroundStyle={
         backgroundColor ? { backgroundColor } : sheetStyles.background
       }

@@ -3,8 +3,8 @@ import { useState } from "react"
 import { FlatList } from "react-native"
 import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -143,11 +143,11 @@ export default function CategoryPresetsScreen() {
           </View>
         ) : isSelected ? (
           <View style={styles.checkmark}>
-            <Icon name="Check" size={16} color="#ffffff" />
+            <IconSymbol name="check" size={16} color="#ffffff" />
           </View>
         ) : (
           <View style={styles.plusButton}>
-            <Icon name="Plus" size={20} color="#ffffff" />
+            <IconSymbol name="plus" size={20} color="#ffffff" />
           </View>
         )}
       </Pressable>

@@ -1,13 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useState } from "react"
 import { ScrollView } from "react-native"
+import { KeyboardStickyView } from "react-native-keyboard-controller"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
 import { ArchiveCategorySheet } from "~/components/archive-category-sheet"
 import { useBottomSheet } from "~/components/bottom-sheet"
 import { DeleteCategorySheet } from "~/components/delete-category-sheet"
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Input } from "~/components/ui/input"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
@@ -17,6 +19,7 @@ import type { Category, CategoryType } from "../../../types/categories"
 
 export default function EditCategoryScreen() {
   const router = useRouter()
+  const insets = useSafeAreaInsets()
   const params = useLocalSearchParams<{
     categoryId: string
     categoryName?: string
@@ -134,6 +137,8 @@ export default function EditCategoryScreen() {
     updatedAt: new Date(),
   }
 
+  const offset = { closed: -insets.top, opened: -insets.top }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -218,7 +223,11 @@ export default function EditCategoryScreen() {
               onPress={() => archiveSheet.present()}
               style={styles.actionButton}
             >
-              <Icon name="Server" size={20} style={styles.archiveIcon} />
+              <IconSymbol
+                name="server-outline"
+                size={20}
+                style={styles.archiveIcon}
+              />
               <Text variant="default" style={styles.archiveText}>
                 Archive Category
               </Text>
@@ -228,7 +237,11 @@ export default function EditCategoryScreen() {
               onPress={() => deleteSheet.present()}
               style={styles.actionButton}
             >
-              <Icon name="Trash2" size={20} style={styles.deleteIcon} />
+              <IconSymbol
+                name="trash-can-outline"
+                size={20}
+                style={styles.deleteIcon}
+              />
               <Text variant="default" style={styles.deleteText}>
                 Delete Category
               </Text>
@@ -237,26 +250,32 @@ export default function EditCategoryScreen() {
         )}
       </ScrollView>
 
-      <View style={styles.actions}>
-        <Button variant="outline" onPress={handleCancel} style={styles.button}>
-          <Text variant="default" style={styles.cancelText}>
-            Cancel
-          </Text>
-        </Button>
-        <Button
-          variant="default"
-          onPress={handleSubmit}
-          style={styles.button}
-          disabled={
-            !name.trim() ||
-            (!isAddMode && name.trim() === (params.categoryName || ""))
-          }
-        >
-          <Text variant="default" style={styles.saveText}>
-            {isAddMode ? "Create" : "Save Changes"}
-          </Text>
-        </Button>
-      </View>
+      <KeyboardStickyView offset={offset}>
+        <View style={styles.actions}>
+          <Button
+            variant="outline"
+            onPress={handleCancel}
+            style={styles.button}
+          >
+            <Text variant="default" style={styles.cancelText}>
+              Cancel
+            </Text>
+          </Button>
+          <Button
+            variant="default"
+            onPress={handleSubmit}
+            style={styles.button}
+            disabled={
+              !name.trim() ||
+              (!isAddMode && name.trim() === (params.categoryName || ""))
+            }
+          >
+            <Text variant="default" style={styles.saveText}>
+              {isAddMode ? "Create" : "Save Changes"}
+            </Text>
+          </Button>
+        </View>
+      </KeyboardStickyView>
 
       {/* Bottom Sheets */}
       {!isAddMode && (
@@ -353,8 +372,9 @@ const styles = StyleSheet.create((theme) => ({
   actions: {
     flexDirection: "row",
     gap: 12,
-    padding: 20,
-    marginBottom: 10,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    backgroundColor: theme.colors.surface,
   },
   button: {
     flex: 1,

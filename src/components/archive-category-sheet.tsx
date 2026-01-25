@@ -4,8 +4,8 @@ import {
   BottomSheetModalComponent,
   useBottomSheet,
 } from "~/components/bottom-sheet"
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -35,7 +35,7 @@ export function ArchiveCategorySheet({
     <BottomSheetModalComponent id={`archive-category-${category.id}`}>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
-          <Icon name="Server" size={40} style={styles.icon} />
+          <IconSymbol name="server-outline" size={40} style={styles.icon} />
         </View>
 
         <Text variant="h3" style={styles.title}>

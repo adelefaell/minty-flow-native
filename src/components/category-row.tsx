@@ -2,7 +2,7 @@ import { useRouter } from "expo-router"
 import { useState } from "react"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
@@ -58,8 +58,8 @@ export function CategoryRow({
           ]}
         >
           {category.icon ? (
-            <Icon
-              name={category.icon as any}
+            <IconSymbol
+              name={category.icon}
               size={20}
               color={
                 category.color
@@ -93,7 +93,7 @@ export function CategoryRow({
         </View>
       </View>
 
-      <Icon name="ChevronRight" size={20} style={styles.chevron} />
+      <IconSymbol name="chevron-right" size={20} style={styles.chevron} />
     </Pressable>
   )
 }

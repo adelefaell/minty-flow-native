@@ -2,7 +2,8 @@ import { useState } from "react"
 import { ScrollView } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon, type IconName } from "~/components/icon"
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Pressable } from "~/components/ui/pressable"
 import { Switch } from "~/components/ui/switch"
 import { Text } from "~/components/ui/text"
@@ -11,7 +12,7 @@ import { View } from "~/components/ui/view"
 interface PrivacySetting {
   id: string
   label: string
-  icon: IconName
+  icon: IconSymbolName
   value: boolean
   onValueChange: (value: boolean) => void
 }
@@ -25,21 +26,21 @@ export default function PrivacyScreen() {
     {
       id: "mask-number",
       label: "Mask numbers (*) at startup",
-      icon: "EyeOff",
+      icon: "eye-off",
       value: maskNumberAtStartup,
       onValueChange: setMaskNumberAtStartup,
     },
     {
       id: "lock-app",
       label: "Lock app",
-      icon: "Unlock",
+      icon: "lock-open-outline",
       value: lockApp,
       onValueChange: setLockApp,
     },
     {
       id: "lock-after-closing",
       label: "Lock after closing",
-      icon: "Lock",
+      icon: "lock-outline",
       value: lockAfterClosing,
       onValueChange: setLockAfterClosing,
     },
@@ -58,7 +59,7 @@ export default function PrivacyScreen() {
             onPress={() => setting.onValueChange(!setting.value)}
           >
             <View style={styles.iconContainer}>
-              <Icon name={setting.icon} size={24} />
+              <IconSymbol name={setting.icon} size={24} />
             </View>
             <View style={styles.labelContainer}>
               <Text variant="p" style={styles.settingLabel}>

@@ -1,0 +1,22 @@
+import { Model } from "@nozbe/watermelondb"
+import { date, field } from "@nozbe/watermelondb/decorators"
+
+/**
+ * Tag model representing tags for categorizing transactions.
+ *
+ * Follows WatermelonDB schema patterns:
+ * - Column names use snake_case
+ * - Boolean fields start with is_
+ * - Date fields end with _at and use number type (Unix timestamps)
+ */
+export default class Tag extends Model {
+  static table = "tags"
+
+  @field("name") name!: string
+  @field("color") color?: string
+  @field("icon") icon?: string
+  @field("usage_count") usageCount!: number
+  @field("is_archived") isArchived!: boolean
+  @date("created_at") createdAt!: Date
+  @date("updated_at") updatedAt!: Date
+}

@@ -3,11 +3,12 @@ import * as ImagePicker from "expo-image-picker"
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { Alert, ScrollView } from "react-native"
+import { KeyboardStickyView } from "react-native-keyboard-controller"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Input } from "~/components/ui/input"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
@@ -65,12 +66,13 @@ export default function EditProfileScreen() {
     router.back()
   }
 
+  const offset = { closed: 0, opened: 10 }
+
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
       >
         {/* Avatar Section */}
         <View style={styles.avatarSection}>
@@ -87,7 +89,7 @@ export default function EditProfileScreen() {
               )}
             </View>
             <View style={styles.cameraIconContainer}>
-              <Icon name="Camera" size={20} />
+              <IconSymbol name="camera-outline" size={20} />
             </View>
           </Pressable>
           {localImageUri && (
@@ -111,17 +113,19 @@ export default function EditProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Save Button - Fixed at bottom */}
-      <View
-        style={[
-          styles.buttonContainer,
-          { paddingBottom: Math.max(insets.bottom + 8, 24) },
-        ]}
-      >
-        <Button onPress={handleSave} style={styles.saveButton}>
-          <Text>Save</Text>
-        </Button>
-      </View>
+      {/* Save Button */}
+      <KeyboardStickyView offset={offset}>
+        <View
+          style={[
+            styles.buttonContainer,
+            { paddingBottom: Math.max(insets.bottom + 8, 24) },
+          ]}
+        >
+          <Button onPress={handleSave} style={styles.saveButton}>
+            <Text>Save</Text>
+          </Button>
+        </View>
+      </KeyboardStickyView>
     </View>
   )
 }
@@ -221,6 +225,7 @@ const styles = StyleSheet.create((theme) => ({
   buttonContainer: {
     paddingHorizontal: 20,
     paddingTop: 16,
+    backgroundColor: theme.colors.surface,
   },
   saveButton: {
     width: "100%",

@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { useAmountFormattingStore } from "~/stores/amount-formatting.store"
 import { useCalculatorStore } from "~/stores/calculator.store"
 import { useCurrencyStore } from "~/stores/currency.store"
@@ -206,13 +206,18 @@ export function CalculatorSheet({
           {/* Row 1 - C, +/-, %, ÷ */}
           <View style={calculatorStyles.keypadRow}>
             <Pressable style={calculatorStyles.keypadButton} onPress={clear}>
-              <Icon name="Eraser" size={24} />
+              <IconSymbol name="eraser" size={24} />
             </Pressable>
             <Pressable
-              style={calculatorStyles.keypadButton}
+              style={[
+                calculatorStyles.keypadButton,
+                calculatorStyles.keypadButtonHorizontal,
+              ]}
               onPress={handleToggleSign}
             >
-              <Icon name="Plus" size={24} />/<Icon name="Minus" size={24} />
+              <IconSymbol name="plus" size={24} />
+              <Text style={calculatorStyles.keypadButtonText}>/</Text>
+              <IconSymbol name="minus" size={24} />
             </Pressable>
             <Pressable
               style={[
@@ -222,8 +227,8 @@ export function CalculatorSheet({
               ]}
               onPress={() => performOperation(Operation.PERCENT)}
             >
-              <Icon
-                name="Percent"
+              <IconSymbol
+                name="percent"
                 size={24}
                 color={
                   isOperationActive(Operation.PERCENT)
@@ -240,8 +245,8 @@ export function CalculatorSheet({
               ]}
               onPress={() => performOperation(Operation.DIVIDE)}
             >
-              <Icon
-                name="Divide"
+              <IconSymbol
+                name="division"
                 size={24}
                 color={
                   isOperationActive(Operation.DIVIDE)
@@ -280,8 +285,8 @@ export function CalculatorSheet({
               ]}
               onPress={() => performOperation(Operation.MULTIPLY)}
             >
-              <Icon
-                name="X"
+              <IconSymbol
+                name="close"
                 size={24}
                 color={
                   isOperationActive(Operation.MULTIPLY)
@@ -320,8 +325,8 @@ export function CalculatorSheet({
               ]}
               onPress={() => performOperation(Operation.MINUS)}
             >
-              <Icon
-                name="Minus"
+              <IconSymbol
+                name="minus"
                 size={24}
                 color={
                   isOperationActive(Operation.MINUS)
@@ -360,8 +365,8 @@ export function CalculatorSheet({
               ]}
               onPress={() => performOperation(Operation.PLUS)}
             >
-              <Icon
-                name="Plus"
+              <IconSymbol
+                name="plus"
                 size={24}
                 color={
                   isOperationActive(Operation.PLUS)
@@ -391,7 +396,7 @@ export function CalculatorSheet({
               onPress={handleBackspace}
               onLongPress={clear}
             >
-              <Icon name="Delete" size={24} />
+              <IconSymbol name="backspace-outline" size={24} />
             </Pressable>
             <Pressable
               style={[
@@ -401,9 +406,13 @@ export function CalculatorSheet({
               onPress={handleEquals}
             >
               {hasActiveOperation() ? (
-                <Icon name="Equal" size={24} />
+                <IconSymbol name="equal" size={24} />
               ) : (
-                <Icon name="Check" size={24} color={theme.colors.onPrimary} />
+                <IconSymbol
+                  name="check"
+                  size={24}
+                  color={theme.colors.onPrimary}
+                />
               )}
             </Pressable>
           </View>
@@ -417,7 +426,7 @@ export function CalculatorSheet({
 const calculatorStyles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    paddingBottom: 8,
+    padding: 20,
   },
   header: {
     alignItems: "center",
@@ -451,6 +460,12 @@ const calculatorStyles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.secondary,
     justifyContent: "center",
     alignItems: "center",
+  },
+  keypadButtonHorizontal: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
   },
   keypadButtonText: {
     color: theme.colors.onSecondary,

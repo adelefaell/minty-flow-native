@@ -1,12 +1,12 @@
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon, type IconName } from "~/components/icon"
+import { IconSymbol, type IconSymbolName } from "~/components/ui/icon-symbol"
 import { Pressable } from "~/components/ui/pressable"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
 interface ActionItemProps {
-  icon: IconName
+  icon: IconSymbolName
   title: string
   description?: string
   onPress: () => void
@@ -31,7 +31,7 @@ export const ActionItem = ({
     >
       <View style={styles.actionItemLeft}>
         <View style={styles.iconContainer}>
-          <Icon name={icon} size={24} />
+          <IconSymbol name={icon} size={24} />
         </View>
         <View style={styles.actionItemContent}>
           <View style={styles.titleRow}>
@@ -51,7 +51,7 @@ export const ActionItem = ({
           )}
         </View>
       </View>
-      <Icon name="ChevronRight" size={18} />
+      <IconSymbol name="chevron-right" size={18} />
     </Pressable>
   )
 }

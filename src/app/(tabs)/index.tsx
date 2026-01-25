@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native-unistyles"
 import { useBottomSheet } from "~/components/bottom-sheet"
 import { ButtonExample } from "~/components/button-example"
 import { CalculatorSheet } from "~/components/calculator-sheet"
+import { ChangeIconSheet } from "~/components/change-icon-sheet"
 import { ExampleBottomSheet1 } from "~/components/example-bottom-sheet-1"
 import ParallaxScrollView from "~/components/parallax-scroll-view"
 import { Pressable } from "~/components/ui/pressable"
@@ -45,6 +46,7 @@ export default function HomeScreen() {
         </Text>
         <ExampleBottomSheet1 />
         <CalculatorSheetExample />
+        <ChangeIconSheetExample />
       </View>
 
       <ButtonExample />
@@ -80,6 +82,27 @@ function CalculatorSheetExample() {
         }}
         onDismiss={() => {
           // Handle sheet dismiss
+        }}
+      />
+    </>
+  )
+}
+
+function ChangeIconSheetExample() {
+  const sheet = useBottomSheet("change-icon-sheet")
+
+  return (
+    <>
+      <Pressable style={styles.triggerButton} onPress={() => sheet.present()}>
+        <Text style={styles.triggerButtonText}>Open Change Icon Sheet</Text>
+      </Pressable>
+
+      <ChangeIconSheet
+        id="change-icon-sheet"
+        onIconSelected={(selectedIcon) => {
+          // Handle icon selection
+          alert(`Icon selected: ${selectedIcon}`)
+          sheet.dismiss()
         }}
       />
     </>

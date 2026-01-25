@@ -6,8 +6,8 @@ import PagerView, {
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
 import { Button } from "~/components/ui/button"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Tooltip } from "~/components/ui/tooltip"
 import { View } from "~/components/ui/view"
 
@@ -132,7 +132,7 @@ const TabLayout = () => {
               onPress={() => goTo(0)}
               style={styles.tabButton}
             >
-              <Icon name="Circle" style={isActiveTab(0)} />
+              <IconSymbol name="circle-outline" style={isActiveTab(0)} />
             </Button>
           </Tooltip>
 
@@ -143,7 +143,7 @@ const TabLayout = () => {
               onPress={() => goTo(1)}
               style={styles.tabButton}
             >
-              <Icon name="BarChart3" style={isActiveTab(1)} />
+              <IconSymbol name="chart-box-outline" style={isActiveTab(1)} />
             </Button>
           </Tooltip>
 
@@ -156,8 +156,8 @@ const TabLayout = () => {
               }
               style={styles.centerButton}
             >
-              <Icon
-                name="Plus"
+              <IconSymbol
+                name="plus"
                 size={28}
                 color={styles.centerButtonIcon.color}
               />
@@ -171,7 +171,7 @@ const TabLayout = () => {
               onPress={() => goTo(2)}
               style={styles.tabButton}
             >
-              <Icon name="Wallet" style={isActiveTab(2)} />
+              <IconSymbol name="wallet-bifold-outline" style={isActiveTab(2)} />
             </Button>
           </Tooltip>
 
@@ -182,7 +182,7 @@ const TabLayout = () => {
               onPress={() => goTo(3)}
               style={styles.tabButton}
             >
-              <Icon name="Settings" style={isActiveTab(3)} />
+              <IconSymbol name="cog" style={isActiveTab(3)} />
             </Button>
           </Tooltip>
         </View>

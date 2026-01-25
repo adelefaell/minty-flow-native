@@ -1,6 +1,7 @@
 import { StyleSheet, useUnistyles } from "react-native-unistyles"
 
-import { Icon, type IconName } from "~/components/icon"
+import type { IconSymbolName } from "~/components/ui/icon-symbol"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 
 import { Pressable } from "./ui/pressable"
 import { Text } from "./ui/text"
@@ -10,7 +11,7 @@ interface Account {
   id: string
   name: string
   type: string
-  icon: IconName
+  icon: IconSymbolName
   iconColor: string
   balance: number
   currency: string
@@ -36,7 +37,7 @@ export const AccountCard = ({ account }: AccountCardProps) => {
             { backgroundColor: `${account.iconColor}20` },
           ]}
         >
-          <Icon name={account.icon} size={24} color={account.iconColor} />
+          <IconSymbol name={account.icon} size={24} color={account.iconColor} />
         </View>
         <View variant="muted" style={styles.accountInfo}>
           <Text variant="h3" style={styles.accountName}>
@@ -59,8 +60,8 @@ export const AccountCard = ({ account }: AccountCardProps) => {
         <View variant="muted" style={styles.summaryRow}>
           <View variant="muted" style={styles.summaryItem}>
             <View variant="muted" style={styles.summaryItemHeader}>
-              <Icon
-                name="ArrowDown"
+              <IconSymbol
+                name="arrow-down"
                 size={12}
                 color={theme.colors.customColors.income}
               />
@@ -76,8 +77,8 @@ export const AccountCard = ({ account }: AccountCardProps) => {
           </View>
           <View variant="muted" style={styles.summaryItem}>
             <View variant="muted" style={styles.summaryItemHeader}>
-              <Icon
-                name="ArrowUp"
+              <IconSymbol
+                name="arrow-up"
                 size={12}
                 color={theme.colors.customColors.expense}
               />
@@ -93,8 +94,8 @@ export const AccountCard = ({ account }: AccountCardProps) => {
           </View>
           <View variant="muted" style={styles.summaryItem}>
             <View variant="muted" style={styles.summaryItemHeader}>
-              <Icon
-                name="TrendingUp"
+              <IconSymbol
+                name="chart-timeline-variant"
                 size={12}
                 color={theme.colors.customColors.semi}
               />

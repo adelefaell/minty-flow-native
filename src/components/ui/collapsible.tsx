@@ -2,7 +2,7 @@ import { useState } from "react"
 import { TouchableOpacity } from "react-native"
 import { StyleSheet } from "react-native-unistyles"
 
-import { Icon } from "~/components/icon"
+import { IconSymbol } from "~/components/ui/icon-symbol"
 import { Text } from "~/components/ui/text"
 import { View } from "~/components/ui/view"
 
@@ -21,7 +21,7 @@ export const Collapsible = ({ children, title }: CollapsibleProps) => {
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
       >
-        <Icon name="ChevronRight" size={18} weight="medium" />
+        <IconSymbol name="chevron-right" size={18} />
 
         <Text variant="h3">{title}</Text>
       </TouchableOpacity>
